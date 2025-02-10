@@ -1,8 +1,8 @@
 package fr.xania.questjournal.entries.action
 
 // Bug connus :
-// * Erreur lorsqu'on clique sur un bouton
 // * Gestion de la description/Objectif cacastrofique
+// * Titre Quest ne serialize pas
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
@@ -18,6 +18,7 @@ import com.typewritermc.engine.paper.entry.entries.LinesEntry
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
+import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
 import net.kyori.adventure.text.Component
@@ -139,39 +140,40 @@ class OpenJournalEntry(
 
             if (startIndex < questsList.size) {
                 questsList.subList(startIndex, endIndex).forEachIndexed { index, quest ->
-                    val loreComponents = quest.children.descendants(LinesEntry::class)
-                        .mapNotNull { it.get()?.lines(player) }
-                        .flatMap { it.split("\n") }
-                        .fold(mutableListOf<Component>()) { acc, line ->
-                            val miniMessage = MiniMessage.miniMessage()
+                    val miniMessage = MiniMessage.miniMessage()
 
-                            if (acc.isEmpty()) {
+                    val loreComponents = buildList<Component> {
 
-                                val component = miniMessage.deserialize(line)
-                                acc.add(component)
+                        val objectives = quest.children.descendants(ObjectiveEntry::class)
+                            .mapNotNull { it.get() }
 
-                            } else {
-
-                                val previousLine = acc.last().style()
-                                val lastColor = previousLine.color()
-                                val coloredLine = if (lastColor != null) {
-                                    "<$lastColor>$line"
-
-                                } else {
-                                    line
-                                }
-
-                                val component = miniMessage.deserialize(coloredLine)
-                                acc.add(component)
+                        val displayObjectives = objectives
+                            .filter { objective ->
+                                val audience = objective.criteria.player?.inAudience(player)
+                                audience == true
                             }
-                            acc
+                            .flatMap { objective -> objective.display(player)?.lines() ?: emptyList() }
+
+                        if (displayObjectives.isNotEmpty()) {
+                            displayObjectives.forEach { line ->
+                                add(miniMessage.deserialize(line))
+                            }
+                        } else {
+
+                            quest.children.descendants(LinesEntry::class)
+                                .mapNotNull { it.get()?.lines(player) }
+                                .flatMap { it?.lines()?.asIterable() ?: emptyList() }
+                                .forEach { line ->
+                                    add(miniMessage.deserialize(line))
+                                }
                         }
+                    }
+
 
 
                     gui.setItem(index, questItem(player, quest, loreComponents))
                 }
             }
-
 
             addNavigationButtons(player, page, gui, status)
             val leaveItem = menuItem(questMenuButtonLeaveType, questMenuButtonLeaveTitle, questMenuButtonLeaveModelData)
@@ -182,13 +184,14 @@ class OpenJournalEntry(
 
 
 
+
         private fun questItem(player: Player, quest: QuestEntry, lore: List<Component>): ItemStack {
             val material = Material.getMaterial(questMenuButtonQuestType) ?: Material.WRITTEN_BOOK
 
             return ItemStack(material).apply {
                 itemMeta = itemMeta?.apply {
                     val miniMessage = MiniMessage.miniMessage()
-                    val component = miniMessage.deserialize(quest.displayName.get(player))
+                    val component = LegacyComponentSerializer.legacySection().deserialize(quest.displayName.get(player))
                     displayName(component)
                     setCustomModelData(questMenuButtonQuestModelData)
                     lore(lore)
@@ -196,7 +199,6 @@ class OpenJournalEntry(
             }
         }
 
-        // Créer l'item pour les boutons du menu principal et de la navigation
         private fun menuItem(materialName: String, name: String, customModelData: Int = 0): ItemStack {
             val material = Material.getMaterial(materialName) ?: Material.BARRIER
 
