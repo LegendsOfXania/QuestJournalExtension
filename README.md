@@ -19,3 +19,8 @@ Created by Legends of Xania.
 ## ⚙️ Configuration  
 
 Configuration is done in the `snippet.yml` file.
+
+## Credits
+
+Made by [XayaTV](https://be.net/xayatv) for the Legends of Xania with the great help of [Gabber](https://github.com/gabber235) !
+Don't forget to give the credits if you use the extension.
