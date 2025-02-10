@@ -1,20 +1,21 @@
-# QuestJournalExtension  
+# QuestJournalExtension
 
-Une extension pour [TypeWriter](https://docs.typewritermc.com/) qui ajoute un **journal de quêtes** à votre serveur Minecraft. 
-Crée par Legends of Xania.
+An extension for [TypeWriter](https://docs.typewritermc.com/) that adds a **quest journal** to your Minecraft server.  
+Created by Legends of Xania.
 
-## 📖 Fonctionnalités  
+## 📖 Features  
 
-- 📜 **Suivi des quêtes** : Affiche les quêtes non commencées, en cours et terminées.  
-- 🔖 **Interface intuitive** : Un journal accessible facilement accessible avec une nouvelle action `OpenJournalMenu`.  
-- 🔄 **Mise à jour en temps réel** : Synchronisation automatique avec vos quêtes.  
+- 📜 **Quest Tracking**: Displays quests that are not started, in progress, or completed.  
+- 🔖 **Intuitive Interface**: A journal easily accessible with a new `OpenJournalMenu` action.  
+- 🔄 **Real-time Updates**: Automatic synchronization with your quests.  
 
 ## 📦 Installation  
 
-1. Téléchargez **QuestJournalExtension.jar**.  
-2. Placez-le dans le dossier `plugins/TypeWriter/extensions/`.  
-3. Redémarrez votre serveur.  
+1. Download **TypeWriter 0.8.0-beta-151**. 
+2. Download **QuestJournalExtension.jar**.  
+3. Place it in the `plugins/TypeWriter/extensions/` folder.  
+4. Restart your server.  
 
 ## ⚙️ Configuration  
 
-La configuration se fait dans le fichier `snippet.yml`. 
+Configuration is done in the `snippet.yml` file.
