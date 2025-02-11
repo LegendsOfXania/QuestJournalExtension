@@ -1,6 +1,7 @@
 package fr.xania.questjournal.entries.action
 
 // Bug connus :
+// * Erreur lorsqu'on clique sur un bouton
 // * Gestion de la description/Objectif cacastrofique
 
 import com.typewritermc.core.books.pages.Colors
@@ -14,12 +15,15 @@ import com.typewritermc.engine.paper.entry.entries.LinesEntry
 import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
+import com.typewritermc.engine.paper.utils.asMini
 import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -132,40 +136,36 @@ class OpenJournalEntry(
             val startIndex = (page - 1) * 45
             val endIndex = minOf(startIndex + 45, questsList.size)
 
-            //  BUG
-            //  BUG
-            //  BUG 
-            
             if (startIndex < questsList.size) {
                 questsList.subList(startIndex, endIndex).forEachIndexed { index, quest ->
-                    val miniMessage = MiniMessage.miniMessage()
 
                     val loreComponents = buildList<Component> {
-
                         val objectives = quest.children.descendants(ObjectiveEntry::class)
                             .mapNotNull { it.get() }
 
-                        val displayObjectives = objectives
-                                .filter { objective ->
+                        val displayObjectives = objectives.filter { objective ->
                             player.inAudience(objective)
                         }
 
                         if (displayObjectives.isNotEmpty()) {
                             displayObjectives.forEach { line ->
-                                add(objective.display(player))
+                                val component = line.display(player)
+                                val wrappedLines = wrapComponentText(component.asMini(), 30)
+
+                                wrappedLines.forEach { add(it) }
                             }
                         } else {
-
                             quest.children.descendants(LinesEntry::class)
                                 .mapNotNull { it.get()?.lines(player) }
                                 .flatMap { it.lines().asIterable() }
                                 .forEach { line ->
-                                    add(miniMessage.deserialize(line))
+                                    val component = MiniMessage.miniMessage().deserialize("<gray>$line")
+                                    val wrappedLines = wrapComponentText(component, 30, defaultColor = "<gray>")
+
+                                    wrappedLines.forEach { add(it) }
                                 }
                         }
                     }
-
-
 
                     gui.setItem(index, questItem(player, quest, loreComponents))
                 }
@@ -179,6 +179,41 @@ class OpenJournalEntry(
         }
 
 
+        // Fonction pour découper un texte tout en conservant la dernière couleur
+        fun wrapComponentText(component: Component, maxLength: Int, defaultColor: String? = null): List<Component> {
+            val text = MiniMessage.miniMessage().serialize(component).trim()
+            val words = text.split(" ")
+            val result = mutableListOf<String>()
+            var currentLine = StringBuilder()
+            var currentColor = defaultColor ?: "" // Définit la couleur par défaut si non spécifiée
+
+            for (word in words) {
+                val colorMatch = Regex("<[^>]+>").find(word)
+                if (colorMatch != null) {
+                    currentColor = colorMatch.value
+                    val colorWord = word.replace(colorMatch.value, "")
+                    if (currentLine.isNotEmpty() && currentLine.length + colorWord.length + 1 > maxLength) {
+                        result.add(currentLine.toString())
+                        currentLine = StringBuilder()
+                    }
+                    currentLine.append(currentColor).append(colorWord)
+                } else {
+                    if (currentLine.isNotEmpty() && currentLine.length + word.length + 1 > maxLength) {
+                        result.add(currentLine.toString())
+                        currentLine = StringBuilder()
+                    }
+                    if (currentLine.isNotEmpty()) currentLine.append(" ")
+                    currentLine.append(word)
+                }
+            }
+
+            if (currentLine.isNotEmpty()) {
+                result.add(currentLine.toString()) // Ajoute la dernière ligne construite
+            }
+
+            return result.filter { it.isNotEmpty() }
+                .map { MiniMessage.miniMessage().deserialize(it) }
+        }
 
 
         private fun questItem(player: Player, quest: QuestEntry, lore: List<Component>): ItemStack {
