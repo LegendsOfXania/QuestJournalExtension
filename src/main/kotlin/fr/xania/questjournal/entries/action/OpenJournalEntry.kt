@@ -2,16 +2,12 @@ package fr.xania.questjournal.entries.action
 
 // Bug connus :
 // * Gestion de la description/Objectif cacastrofique
-// * Titre Quest ne serialize pas
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.engine.paper.entry.Criteria
-import com.typewritermc.engine.paper.entry.Modifier
-import com.typewritermc.engine.paper.entry.TriggerableEntry
-import com.typewritermc.engine.paper.entry.descendants
+import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.LinesEntry
@@ -35,7 +31,6 @@ import org.bukkit.scheduler.BukkitRunnable
 
 // Snippets
 val mainMenuTitle: String by snippet("journal.menu.main.title", "Journal de quêtes")
-val mainMenuSize: Int by snippet("journal.menu.main.size", 54)
 
 // Titres des menus de quêtes
 val questMenuActiveTitle: String by snippet("journal.menu.active.title", "Quêtes Actives")
@@ -83,7 +78,6 @@ val questMenuButtonPreviousType: String by snippet("journal.menu.quest.buttons.p
 val questMenuButtonPreviousModelData: Int by snippet("journal.menu.quest.buttons.previous.model-data", 0)
 val questMenuButtonPreviousPlace: Int by snippet("journal.menu.quest.buttons.previous.place", 45)
 
-val questsPerPage: Int by snippet("journal.menu.quest.buttons.quests-per-page", 45)
 
 // Définition de l'action pour ouvrir le journal
 @Entry("open_journal_action", "Open the Quest Journal.", Colors.RED, "mdi-light:book-multiple")
@@ -111,7 +105,7 @@ class OpenJournalEntry(
 
         // Ouvre le menu principal
         fun openMainMenu(player: Player) {
-            val gui = Bukkit.createInventory(null, mainMenuSize, mainMenuTitle)
+            val gui = Bukkit.createInventory(null, 54, mainMenuTitle)
 
             gui.setItem(
                 mainMenuButtonsActivePlace,
@@ -135,9 +129,13 @@ class OpenJournalEntry(
             val gui = Bukkit.createInventory(null, 54, title)
 
             val questsList = quests.toList()
-            val startIndex = (page - 1) * questsPerPage
-            val endIndex = minOf(startIndex + questsPerPage, questsList.size)
+            val startIndex = (page - 1) * 45
+            val endIndex = minOf(startIndex + 45, questsList.size)
 
+            //  BUG
+            //  BUG
+            //  BUG 
+            
             if (startIndex < questsList.size) {
                 questsList.subList(startIndex, endIndex).forEachIndexed { index, quest ->
                     val miniMessage = MiniMessage.miniMessage()
@@ -148,21 +146,19 @@ class OpenJournalEntry(
                             .mapNotNull { it.get() }
 
                         val displayObjectives = objectives
-                            .filter { objective ->
-                                val audience = objective.criteria.player?.inAudience(player)
-                                audience == true
-                            }
-                            .flatMap { objective -> objective.display(player)?.lines() ?: emptyList() }
+                                .filter { objective ->
+                            player.inAudience(objective)
+                        }
 
                         if (displayObjectives.isNotEmpty()) {
                             displayObjectives.forEach { line ->
-                                add(miniMessage.deserialize(line))
+                                add(objective.display(player))
                             }
                         } else {
 
                             quest.children.descendants(LinesEntry::class)
                                 .mapNotNull { it.get()?.lines(player) }
-                                .flatMap { it?.lines()?.asIterable() ?: emptyList() }
+                                .flatMap { it.lines().asIterable() }
                                 .forEach { line ->
                                     add(miniMessage.deserialize(line))
                                 }
@@ -191,13 +187,15 @@ class OpenJournalEntry(
             return ItemStack(material).apply {
                 itemMeta = itemMeta?.apply {
                     val miniMessage = MiniMessage.miniMessage()
-                    val component = LegacyComponentSerializer.legacySection().deserialize(quest.displayName.get(player))
-                    displayName(component)
+                    val component: Component = miniMessage.deserialize(quest.displayName.get(player))
+                    val formattedName = LegacyComponentSerializer.legacySection().serialize(component)
+                    setDisplayName(formattedName)
                     setCustomModelData(questMenuButtonQuestModelData)
                     lore(lore)
                 }
             }
         }
+
 
         private fun menuItem(materialName: String, name: String, customModelData: Int = 0): ItemStack {
             val material = Material.getMaterial(materialName) ?: Material.BARRIER
@@ -266,8 +264,8 @@ class OpenJournalEntry(
 
             buttons.forEach { (buttonName, buttonType, modelData) ->
                 if (clickedItem.type == Material.getMaterial(buttonType) && itemMeta.hasDisplayName() && (modelData == 0 || (itemMeta.hasCustomModelData() && itemMeta.customModelData == modelData))) {
-                    val component: Component? = miniMessage.deserialize(buttonName)
-                    component?.let {
+                    val component: Component = miniMessage.deserialize(buttonName)
+                    component.let {
                         val formattedName = LegacyComponentSerializer.legacySection().serialize(it)
                         if (formattedName == itemMeta.displayName) {
                             val status = when (buttonName) {
@@ -307,7 +305,12 @@ class OpenJournalEntry(
                 when (title) {
                     questMenuActiveTitle -> openQuestMenu(player, QuestStatus.ACTIVE, questMenuActiveTitle, page)
                     questMenuInactiveTitle -> openQuestMenu(player, QuestStatus.INACTIVE, questMenuInactiveTitle, page)
-                    questMenuCompletedTitle -> openQuestMenu(player, QuestStatus.COMPLETED, questMenuCompletedTitle, page)
+                    questMenuCompletedTitle -> openQuestMenu(
+                        player,
+                        QuestStatus.COMPLETED,
+                        questMenuCompletedTitle,
+                        page
+                    )
                 }
             }
         }
