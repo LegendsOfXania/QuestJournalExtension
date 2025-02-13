@@ -3,7 +3,7 @@
 An extension for [TypeWriter](https://docs.typewritermc.com/) that adds a **quest journal** to your Minecraft server.  
 Created by Legends of Xania.
 
-## 📖 Features  
+## ✨ Features  
 
 - 📜 **Quest Tracking**: Displays quests that are not started, in progress, or completed.  
 - 🔖 **Intuitive Interface**: A journal easily accessible with a new `OpenJournalMenu` action.  
@@ -73,7 +73,11 @@ journal:
           place: 45
 ```
 
-## Credits
+## 📖 Credits
 
 Made by [XayaTV](https://be.net/xayatv) for the Legends of Xania with the great help of [Gabber](https://github.com/gabber235) !
 Don't forget to give the credits if you use the extension.
+
+## Future Updates
+* Support MiniMessage in MenuTitles
+* Support PlaceholderAPI in MenuTitles
