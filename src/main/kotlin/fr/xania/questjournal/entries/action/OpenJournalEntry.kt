@@ -1,9 +1,5 @@
 package fr.xania.questjournal.entries.action
 
-// Bug connus :
-// * Erreur lorsqu'on clique sur un bouton
-// * Gestion de la description/Objectif cacastrofique
-
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.extension.annotations.Entry
@@ -121,15 +117,15 @@ class OpenJournalEntry(
 
             gui.setItem(
                 mainMenuButtonsActivePlace,
-                menuItem(mainMenuButtonsActiveType, mainMenuButtonsActiveName, mainMenuButtonsActiveModelData)
+                menuItem(mainMenuButtonsActiveType, mainMenuButtonsActiveName.parsePlaceholders(player), mainMenuButtonsActiveModelData)
             )
             gui.setItem(
                 mainMenuButtonsInactivePlace,
-                menuItem(mainMenuButtonsInactiveType, mainMenuButtonsInactiveName, mainMenuButtonsInactiveModelData)
+                menuItem(mainMenuButtonsInactiveType, mainMenuButtonsInactiveName.parsePlaceholders(player), mainMenuButtonsInactiveModelData)
             )
             gui.setItem(
                 mainMenuButtonsCompletedPlace,
-                menuItem(mainMenuButtonsCompletedType, mainMenuButtonsCompletedName, mainMenuButtonsCompletedModelData)
+                menuItem(mainMenuButtonsCompletedType, mainMenuButtonsCompletedName.parsePlaceholders(player), mainMenuButtonsCompletedModelData)
             )
 
             player.openInventory(gui)
@@ -175,7 +171,7 @@ class OpenJournalEntry(
             }
 
             addNavigationButtons(player, page, gui, status)
-            val leaveItem = menuItem(questMenuButtonLeaveType, questMenuButtonLeaveTitle, questMenuButtonLeaveModelData)
+            val leaveItem = menuItem(questMenuButtonLeaveType, questMenuButtonLeaveTitle.parsePlaceholders(player), questMenuButtonLeaveModelData)
             gui.setItem(questMenuButtonLeavePlace, leaveItem)
 
             player.openInventory(gui)
@@ -203,7 +199,7 @@ class OpenJournalEntry(
             return ItemStack(material).apply {
                 itemMeta = itemMeta?.apply {
                     val miniMessage = MiniMessage.miniMessage()
-                    val component: Component = miniMessage.deserialize(quest.displayName.get(player))
+                    val component: Component = miniMessage.deserialize(quest.displayName.get(player).parsePlaceholders(player))
                     val formattedName = LegacyComponentSerializer.legacySection().serialize(component)
                     setDisplayName(formattedName)
                     if (questMenuButtonQuestModelData > 0) {
@@ -234,9 +230,9 @@ class OpenJournalEntry(
         private fun addNavigationButtons(
             player: Player, page: Int, gui: org.bukkit.inventory.Inventory, status: QuestStatus
         ) {
-            val nextPageItem = menuItem(questMenuButtonNextType, questMenuButtonNextTitle, questMenuButtonNextModelData)
+            val nextPageItem = menuItem(questMenuButtonNextType, questMenuButtonNextTitle.parsePlaceholders(player), questMenuButtonNextModelData)
             val prevPageItem =
-                menuItem(questMenuButtonPreviousType, questMenuButtonPreviousTitle, questMenuButtonPreviousModelData)
+                menuItem(questMenuButtonPreviousType, questMenuButtonPreviousTitle.parsePlaceholders(player), questMenuButtonPreviousModelData)
 
             gui.setItem(questMenuButtonPreviousPlace, prevPageItem)
             gui.setItem(questMenuButtonNextPlace, nextPageItem)
@@ -272,9 +268,9 @@ class OpenJournalEntry(
             val miniMessage = MiniMessage.miniMessage()
 
             val buttons = listOf(
-                Triple(mainMenuButtonsActiveName, mainMenuButtonsActiveType, mainMenuButtonsActiveModelData),
-                Triple(mainMenuButtonsInactiveName, mainMenuButtonsInactiveType, mainMenuButtonsInactiveModelData),
-                Triple(mainMenuButtonsCompletedName, mainMenuButtonsCompletedType, mainMenuButtonsCompletedModelData)
+                Triple(mainMenuButtonsActiveName.parsePlaceholders(player), mainMenuButtonsActiveType, mainMenuButtonsActiveModelData),
+                Triple(mainMenuButtonsInactiveName.parsePlaceholders(player), mainMenuButtonsInactiveType, mainMenuButtonsInactiveModelData),
+                Triple(mainMenuButtonsCompletedName.parsePlaceholders(player), mainMenuButtonsCompletedType, mainMenuButtonsCompletedModelData)
             )
 
             buttons.forEach { (buttonName, buttonType, modelData) ->
@@ -284,9 +280,9 @@ class OpenJournalEntry(
                         val formattedName = LegacyComponentSerializer.legacySection().serialize(it)
                         if (formattedName == itemMeta.displayName) {
                             val status = when (buttonName) {
-                                mainMenuButtonsActiveName -> QuestStatus.ACTIVE
-                                mainMenuButtonsInactiveName -> QuestStatus.INACTIVE
-                                mainMenuButtonsCompletedName -> QuestStatus.COMPLETED
+                                mainMenuButtonsActiveName.parsePlaceholders(player) -> QuestStatus.ACTIVE
+                                mainMenuButtonsInactiveName.parsePlaceholders(player) -> QuestStatus.INACTIVE
+                                mainMenuButtonsCompletedName.parsePlaceholders(player) -> QuestStatus.COMPLETED
                                 else -> return
                             }
                             openQuestMenu(player, status, getQuestMenuTitle(player, status))
@@ -309,8 +305,8 @@ class OpenJournalEntry(
             ) {
                 val displayName = clickedItem.itemMeta?.displayName ?: return
                 val page = when {
-                    displayName.contains(questMenuButtonNextTitle) -> getNextPage(title.parsePlaceholders(player))
-                    displayName.contains(questMenuButtonPreviousTitle) -> getPreviousPage(title.parsePlaceholders(player))
+                    displayName.contains(questMenuButtonNextTitle.parsePlaceholders(player)) -> getNextPage(title.parsePlaceholders(player))
+                    displayName.contains(questMenuButtonPreviousTitle.parsePlaceholders(player)) -> getPreviousPage(title.parsePlaceholders(player))
                     else -> return
                 }
 
