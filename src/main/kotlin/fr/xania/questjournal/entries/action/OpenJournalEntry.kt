@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.LinesEntry
+import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.asMiniWithResolvers
@@ -36,21 +37,21 @@ import org.bukkit.scheduler.BukkitRunnable
 val miniMessage = MiniMessage.miniMessage()
 // Snippets
 val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Journal de quêtes")
-val mainMenuTitlecomponent: Component = miniMessage.deserialize(mainMenuTitleSnippet)
-val mainMenuTitle = LegacyComponentSerializer.legacySection().serialize(mainMenuTitlecomponent)
+val mainMenuTitleComponent: Component = miniMessage.deserialize(mainMenuTitleSnippet)
+val mainMenuTitle = LegacyComponentSerializer.legacySection().serialize(mainMenuTitleComponent)
 
 // Titres des menus de quêtes
 val questMenuActiveTitleSnippet: String by snippet("journal.menu.active.title", "Quêtes Actives")
-val questMenuActiveTitlecomponent: Component = miniMessage.deserialize(questMenuActiveTitleSnippet)
-val questMenuActiveTitle = LegacyComponentSerializer.legacySection().serialize(questMenuActiveTitlecomponent)
+val questMenuActiveTitleComponent: Component = miniMessage.deserialize(questMenuActiveTitleSnippet)
+val questMenuActiveTitle = LegacyComponentSerializer.legacySection().serialize(questMenuActiveTitleComponent)
 
 val questMenuInactiveTitleSnippet: String by snippet("journal.menu.inactive.title", "Quêtes Inactives")
-val questMenuInactiveTitlecomponent: Component = miniMessage.deserialize(questMenuInactiveTitleSnippet)
-val questMenuInactiveTitle = LegacyComponentSerializer.legacySection().serialize(questMenuInactiveTitlecomponent)
+val questMenuInactiveTitleComponent: Component = miniMessage.deserialize(questMenuInactiveTitleSnippet)
+val questMenuInactiveTitle = LegacyComponentSerializer.legacySection().serialize(questMenuInactiveTitleComponent)
 
 val questMenuCompletedTitleSnippet: String by snippet("journal.menu.completed.title", "Quêtes Complétées")
-val questMenuCompletedTitlecomponent: Component = miniMessage.deserialize(questMenuCompletedTitleSnippet)
-val questMenuCompletedTitle = LegacyComponentSerializer.legacySection().serialize(questMenuCompletedTitlecomponent)
+val questMenuCompletedTitleComponent: Component = miniMessage.deserialize(questMenuCompletedTitleSnippet)
+val questMenuCompletedTitle = LegacyComponentSerializer.legacySection().serialize(questMenuCompletedTitleComponent)
 
 // Boutons du menu Principal
 val mainMenuButtonsActiveName: String by snippet(
@@ -116,7 +117,7 @@ class OpenJournalEntry(
 
         // Ouvre le menu principal
         fun openMainMenu(player: Player) {
-            val gui = Bukkit.createInventory(null, 54, mainMenuTitle)
+            val gui = Bukkit.createInventory(null, 54, mainMenuTitle.parsePlaceholders(player))
 
             gui.setItem(
                 mainMenuButtonsActivePlace,
@@ -137,7 +138,7 @@ class OpenJournalEntry(
 
         private fun openQuestMenu(player: Player, status: QuestStatus, title: String, page: Int = 1) {
             val quests = Query.find<QuestEntry>().filter { it.questStatus(player) == status }
-            val gui = Bukkit.createInventory(null, 54, title)
+            val gui = Bukkit.createInventory(null, 54, title.parsePlaceholders(player))
 
             val questsList = quests.toList()
             val startIndex = (page - 1) * 45
@@ -251,14 +252,14 @@ class OpenJournalEntry(
             event.isCancelled = true
 
             when {
-                title.equals(mainMenuTitle, ignoreCase = true) -> {
+                title.equals(mainMenuTitle.parsePlaceholders(player), ignoreCase = true) -> {
                     handleMainMenuClick(player, clickedItem, title)
                 }
 
-                title.equals(questMenuActiveTitle, ignoreCase = true) || title.equals(
-                    questMenuInactiveTitle,
+                title.equals(questMenuActiveTitle.parsePlaceholders(player), ignoreCase = true) || title.equals(
+                    questMenuInactiveTitle.parsePlaceholders(player),
                     ignoreCase = true
-                ) || title.equals(questMenuCompletedTitle, ignoreCase = true) -> {
+                ) || title.equals(questMenuCompletedTitle.parsePlaceholders(player), ignoreCase = true) -> {
                     handleQuestMenuClick(player, clickedItem, title)
                 }
 
@@ -266,7 +267,6 @@ class OpenJournalEntry(
             }
         }
 
-        // Traitement des clics dans le menu principal
         private fun handleMainMenuClick(player: Player, clickedItem: ItemStack, title: String) {
             val itemMeta = clickedItem.itemMeta ?: return
             val miniMessage = MiniMessage.miniMessage()
@@ -289,17 +289,14 @@ class OpenJournalEntry(
                                 mainMenuButtonsCompletedName -> QuestStatus.COMPLETED
                                 else -> return
                             }
-                            openQuestMenu(player, status, getQuestMenuTitle(status))
+                            openQuestMenu(player, status, getQuestMenuTitle(player, status))
                         }
                     }
                 }
             }
         }
 
-        // Traitement des clics dans le menu de quêtes
         private fun handleQuestMenuClick(player: Player, clickedItem: ItemStack, title: String) {
-            val itemMeta = clickedItem.itemMeta ?: return
-            val miniMessage = MiniMessage.miniMessage()
 
             if (clickedItem.type == Material.getMaterial(questMenuButtonLeaveType)) {
                 openMainMenu(player)
@@ -312,17 +309,15 @@ class OpenJournalEntry(
             ) {
                 val displayName = clickedItem.itemMeta?.displayName ?: return
                 val page = when {
-                    displayName.contains(questMenuButtonNextTitle) -> getNextPage(title)
-                    displayName.contains(questMenuButtonPreviousTitle) -> getPreviousPage(title)
+                    displayName.contains(questMenuButtonNextTitle) -> getNextPage(title.parsePlaceholders(player))
+                    displayName.contains(questMenuButtonPreviousTitle) -> getPreviousPage(title.parsePlaceholders(player))
                     else -> return
                 }
 
-                when (title) {
-                    questMenuActiveTitle -> openQuestMenu(player, QuestStatus.ACTIVE, questMenuActiveTitle, page)
-                    questMenuInactiveTitle -> openQuestMenu(player, QuestStatus.INACTIVE, questMenuInactiveTitle, page)
-                    questMenuCompletedTitle -> openQuestMenu(
-                        player, QuestStatus.COMPLETED, questMenuCompletedTitle, page
-                    )
+                when (title.parsePlaceholders(player)) {
+                    questMenuActiveTitle.parsePlaceholders(player) -> openQuestMenu(player, QuestStatus.ACTIVE, questMenuActiveTitle.parsePlaceholders(player), page)
+                    questMenuInactiveTitle.parsePlaceholders(player) -> openQuestMenu(player, QuestStatus.INACTIVE, questMenuInactiveTitle.parsePlaceholders(player), page)
+                    questMenuCompletedTitle.parsePlaceholders(player) -> openQuestMenu(player, QuestStatus.COMPLETED, questMenuCompletedTitle.parsePlaceholders(player), page)
                 }
             }
         }
@@ -334,12 +329,13 @@ class OpenJournalEntry(
         private fun getPreviousPage(title: String): Int = 1
 
         // Obtenir le titre du menu des quêtes selon leur statut
-        private fun getQuestMenuTitle(status: QuestStatus): String {
-            return when (status) {
+        private fun getQuestMenuTitle(player: Player, status: QuestStatus): String {
+            val title = when (status) {
                 QuestStatus.ACTIVE -> questMenuActiveTitle
                 QuestStatus.INACTIVE -> questMenuInactiveTitle
                 QuestStatus.COMPLETED -> questMenuCompletedTitle
             }
+            return title.parsePlaceholders(player)
         }
     }
 }
