@@ -1,9 +1,5 @@
 package fr.xania.questjournal.entries.action
 
-// Bug connus :
-// * Erreur lorsqu'on clique sur un bouton
-// * Gestion de la description/Objectif cacastrofique
-
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.extension.annotations.Entry
@@ -34,12 +30,22 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 // Snippets
-val mainMenuTitle: String by snippet("journal.menu.main.title", "Journal de quêtes")
+val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Journal de quêtes")
+val mainMenuTitlecomponent: Component = miniMessage.deserialize(mainMenuTitleSnippet)
+val mainMenuTitle = LegacyComponentSerializer.legacySection().serialize(mainMenuTitlecomponent)
 
 // Titres des menus de quêtes
-val questMenuActiveTitle: String by snippet("journal.menu.active.title", "Quêtes Actives")
-val questMenuInactiveTitle: String by snippet("journal.menu.inactive.title", "Quêtes Inactives")
-val questMenuCompletedTitle: String by snippet("journal.menu.completed.title", "Quêtes Complétées")
+val questMenuActiveTitleSnippet: String by snippet("journal.menu.active.title", "Quêtes Actives")
+val questMenuActiveTitlecomponent: Component = miniMessage.deserialize(questMenuActiveTitleSnippet)
+val questMenuActiveTitle = LegacyComponentSerializer.legacySection().serialize(questMenuActiveTitlecomponent)
+
+val questMenuInactiveTitleSnippet: String by snippet("journal.menu.inactive.title", "Quêtes Inactives")
+val questMenuInactiveTitlecomponent: Component = miniMessage.deserialize(questMenuInactiveTitleSnippet)
+val questMenuInactiveTitle = LegacyComponentSerializer.legacySection().serialize(questMenuInactiveTitlecomponent)
+
+val questMenuCompletedTitleSnippet: String by snippet("journal.menu.completed.title", "Quêtes Complétées")
+val questMenuCompletedTitlecomponent: Component = miniMessage.deserialize(questMenuCompletedTitleSnippet)
+val questMenuCompletedTitle = LegacyComponentSerializer.legacySection().serialize(questMenuCompletedTitlecomponent)
 
 // Boutons du menu Principal
 val mainMenuButtonsActiveName: String by snippet(
