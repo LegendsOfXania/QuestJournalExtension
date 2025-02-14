@@ -1,5 +1,9 @@
 package fr.xania.questjournal.entries.action
 
+// Bug connus :
+// * Erreur lorsqu'on clique sur un bouton
+// * Gestion de la description/Objectif cacastrofique
+
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Query
 import com.typewritermc.core.extension.annotations.Entry
@@ -8,18 +12,18 @@ import com.typewritermc.engine.paper.entry.*
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.LinesEntry
-import com.typewritermc.engine.paper.logger
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.snippets.snippet
-import com.typewritermc.engine.paper.utils.asMini
+import com.typewritermc.engine.paper.utils.asMiniWithResolvers
+import com.typewritermc.engine.paper.utils.limitLineLength
 import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -103,11 +107,7 @@ class OpenJournalEntry(
     override fun ActionTrigger.execute() {
         object : BukkitRunnable() {
             override fun run() {
-                try {
-                    Journal.openMainMenu(player)
-                } catch (e: Exception) {
-                    logger.warning("An error occurred when opening the Quest Journal. Please contact the author.")
-                }
+                Journal.openMainMenu(player)
             }
         }.runTask(plugin)
     }
@@ -147,8 +147,7 @@ class OpenJournalEntry(
                 questsList.subList(startIndex, endIndex).forEachIndexed { index, quest ->
 
                     val loreComponents = buildList<Component> {
-                        val objectives = quest.children.descendants(ObjectiveEntry::class)
-                            .mapNotNull { it.get() }
+                        val objectives = quest.children.descendants(ObjectiveEntry::class).mapNotNull { it.get() }
 
                         val displayObjectives = objectives.filter { objective ->
                             player.inAudience(objective)
@@ -156,21 +155,17 @@ class OpenJournalEntry(
 
                         if (displayObjectives.isNotEmpty()) {
                             displayObjectives.forEach { line ->
-                                val component = line.display(player)
-                                val wrappedLines = wrapComponentText(component.asMini(), 30)
-
-                                wrappedLines.forEach { add(it) }
+                                addAll(line.display(player).limitLineLength(30).splitComponents())
                             }
                         } else {
-                            quest.children.descendants(LinesEntry::class)
-                                .mapNotNull { it.get()?.lines(player) }
-                                .flatMap { it.lines().asIterable() }
-                                .forEach { line ->
-                                    val component = MiniMessage.miniMessage().deserialize("<gray>$line")
-                                    val wrappedLines = wrapComponentText(component, 30, defaultColor = "<gray>")
 
-                                    wrappedLines.forEach { add(it) }
-                                }
+                            val description = quest.children.descendants(LinesEntry::class)
+                                .mapNotNull { it.get()?.lines(player) }
+                                .flatMap { it.lines() }
+                                .joinToString("\n")
+                            addAll(description.splitComponents())
+
+
                         }
                     }
 
@@ -185,42 +180,20 @@ class OpenJournalEntry(
             player.openInventory(gui)
         }
 
+        fun String.splitComponents(vararg resolvers: TagResolver): List<Component> {
+            val components = split("\n").map { it.asMiniWithResolvers(*resolvers) }.toMutableList()
 
-        // Fonction pour découper un texte tout en conservant la dernière couleur
-        fun wrapComponentText(component: Component, maxLength: Int, defaultColor: String? = null): List<Component> {
-            val text = MiniMessage.miniMessage().serialize(component).trim()
-            val words = text.split(" ")
-            val result = mutableListOf<String>()
-            var currentLine = StringBuilder()
-            var currentColor = defaultColor ?: "" // Définit la couleur par défaut si non spécifiée
+            for (i in 1 until components.size) {
+                val previous = components[i - 1]
+                val current = components[i]
 
-            for (word in words) {
-                val colorMatch = Regex("<[^>]+>").find(word)
-                if (colorMatch != null) {
-                    currentColor = colorMatch.value
-                    val colorWord = word.replace(colorMatch.value, "")
-                    if (currentLine.isNotEmpty() && currentLine.length + colorWord.length + 1 > maxLength) {
-                        result.add(currentLine.toString())
-                        currentLine = StringBuilder()
-                    }
-                    currentLine.append(currentColor).append(colorWord)
-                } else {
-                    if (currentLine.isNotEmpty() && currentLine.length + word.length + 1 > maxLength) {
-                        result.add(currentLine.toString())
-                        currentLine = StringBuilder()
-                    }
-                    if (currentLine.isNotEmpty()) currentLine.append(" ")
-                    currentLine.append(word)
-                }
+                val mergedStyle = current.style().merge(previous.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET)
+                components[i] = current.style(mergedStyle)
             }
-
-            if (currentLine.isNotEmpty()) {
-                result.add(currentLine.toString()) // Ajoute la dernière ligne construite
-            }
-
-            return result.filter { it.isNotEmpty() }
-                .map { MiniMessage.miniMessage().deserialize(it) }
+            return components
         }
+
+
 
 
         private fun questItem(player: Player, quest: QuestEntry, lore: List<Component>): ItemStack {
@@ -232,7 +205,9 @@ class OpenJournalEntry(
                     val component: Component = miniMessage.deserialize(quest.displayName.get(player))
                     val formattedName = LegacyComponentSerializer.legacySection().serialize(component)
                     setDisplayName(formattedName)
-                    setCustomModelData(questMenuButtonQuestModelData)
+                    if (questMenuButtonQuestModelData > 0) {
+                        setCustomModelData(questMenuButtonQuestModelData)
+                    }
                     lore(lore)
                 }
             }
@@ -256,10 +231,7 @@ class OpenJournalEntry(
         }
 
         private fun addNavigationButtons(
-            player: Player,
-            page: Int,
-            gui: org.bukkit.inventory.Inventory,
-            status: QuestStatus
+            player: Player, page: Int, gui: org.bukkit.inventory.Inventory, status: QuestStatus
         ) {
             val nextPageItem = menuItem(questMenuButtonNextType, questMenuButtonNextTitle, questMenuButtonNextModelData)
             val prevPageItem =
@@ -283,9 +255,10 @@ class OpenJournalEntry(
                     handleMainMenuClick(player, clickedItem, title)
                 }
 
-                title.equals(questMenuActiveTitle, ignoreCase = true) ||
-                        title.equals(questMenuInactiveTitle, ignoreCase = true) ||
-                        title.equals(questMenuCompletedTitle, ignoreCase = true) -> {
+                title.equals(questMenuActiveTitle, ignoreCase = true) || title.equals(
+                    questMenuInactiveTitle,
+                    ignoreCase = true
+                ) || title.equals(questMenuCompletedTitle, ignoreCase = true) -> {
                     handleQuestMenuClick(player, clickedItem, title)
                 }
 
@@ -348,10 +321,7 @@ class OpenJournalEntry(
                     questMenuActiveTitle -> openQuestMenu(player, QuestStatus.ACTIVE, questMenuActiveTitle, page)
                     questMenuInactiveTitle -> openQuestMenu(player, QuestStatus.INACTIVE, questMenuInactiveTitle, page)
                     questMenuCompletedTitle -> openQuestMenu(
-                        player,
-                        QuestStatus.COMPLETED,
-                        questMenuCompletedTitle,
-                        page
+                        player, QuestStatus.COMPLETED, questMenuCompletedTitle, page
                     )
                 }
             }
