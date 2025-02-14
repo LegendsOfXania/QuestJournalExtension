@@ -24,6 +24,7 @@ Configuration is done in the `snippet.yml` file.
 journal:
   menu:
     main:
+# The name of the menu (Support MiniMessage and PlaceholderAPI)
       title: Journal de quêtes
       buttons:
         active:
@@ -77,7 +78,3 @@ journal:
 
 Made by [XayaTV](https://be.net/xayatv) for the Legends of Xania with the great help of [Gabber](https://github.com/gabber235) !
 Don't forget to give the credits if you use the extension.
-
-## Future Updates
-* Support MiniMessage in MenuTitles
-* Support PlaceholderAPI in MenuTitles
