@@ -29,6 +29,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
+val miniMessage = MiniMessage.miniMessage()
 // Snippets
 val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Journal de quêtes")
 val mainMenuTitlecomponent: Component = miniMessage.deserialize(mainMenuTitleSnippet)
