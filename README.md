@@ -5,9 +5,9 @@ Created by Legends of Xania.
 
 ## ✨ Features  
 
-- 📜 **Quest Tracking**: Displays quests that are not started, in progress, or completed.  
-- 🔖 **Intuitive Interface**: A journal easily accessible with a new `OpenJournalMenu` action.  
-- 🔄 **Real-time Updates**: Automatic synchronization with your quests.  
+- **Quest Tracking**: Displays quests that are not started, in progress, or completed.  
+- **Intuitive Interface**: A journal easily accessible with a new `OpenJournalMenu` action.  
+- **Real-time Updates**: Automatic synchronization with your quests.  
 
 ## 📦 Installation  
 
@@ -24,25 +24,23 @@ Configuration is done in the `snippet.yml` file.
 journal:
   menu:
     main:
-# The name of the menu (Support MiniMessage and PlaceholderAPI)
-      title: Journal de quêtes
+      title: Quests Journal
       buttons:
         active:
-# The name of the item, support MiniMessage (yes, I'M FRENCH)
-          name: <green>Voir les quêtes actives
+          name: <green>See all actives quests
 # The type of the item
           type: GREEN_BANNER
-# The Custom Model Data of the item. Set to 0 if it doesn't have any
+# The Custom Model Data of the item. Set to 0 if it doesn't have any.
           model-data: 0
 # The place of the item in the Menu
           place: 20
         inactive:
-          name: <yellow>Voir les quêtes inactives
+          name: <yellow>See all inactives quests
           type: YELLOW_BANNER
           model-data: 0
           place: 22
         completed:
-          name: <gray>Voir les quêtes complétées
+          name: <gray>See all completed quests
           type: GRAY_BANNER
           model-data: 0
           place: 24
@@ -51,24 +49,24 @@ journal:
     inactive:
       title: Quêtes Inactives
     completed:
-      title: Quêtes Complétées
+      title: Quêtes Completed
     quest:
       buttons:
         quest:
           type: WRITTEN_BOOK
           model-data: 0
         leave:
-          title: <red>Retour
+          title: <red>Back
           type: BARRIER
           model-data: 0
           place: 49
         next:
-          title: <yellow>Suivant
+          title: <yellow>Next
           type: BRICK
           model-data: 10006
           place: 53
         previous:
-          title: <yellow>Précédent
+          title: <yellow>Previous
           type: ARROW
           model-data: 0
           place: 45
