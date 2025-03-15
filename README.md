@@ -72,6 +72,8 @@ journal:
           place: 45
 ```
 
+To add a description, add a ``LinesEntry`` on your ``QuestsEntry`` !
+
 ## 📖 Credits
 
 Made by [XayaTV](https://be.net/xayatv) for the Legends of Xania with the great help of [Gabber](https://github.com/gabber235) !
