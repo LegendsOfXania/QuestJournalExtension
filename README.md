@@ -11,10 +11,12 @@ Created by Legends of Xania.
 
 ## 📦 Installation  
 
-1. Download **TypeWriter 0.8.0-beta-151**. 
-2. Download **QuestJournalExtension.jar**.  
+1. Download **TypeWriter 0.8.0-beta-153**. 
+2. Download **QuestJournalExtension.jar** (on the Typewriter's marketplace).  
 3. Place it in the `plugins/TypeWriter/extensions/` folder.  
 4. Restart your server.  
+
+*note: fell free to compile the files yourself.*
 
 ## ⚙️ Configuration  
 
@@ -45,11 +47,11 @@ journal:
           model-data: 0
           place: 24
     active:
-      title: Quêtes Actives
+      title: Actives Quests
     inactive:
-      title: Quêtes Inactives
+      title: Inactives Quests
     completed:
-      title: Quêtes Completed
+      title: Completed Quests
     quest:
       buttons:
         quest:
@@ -72,7 +74,7 @@ journal:
           place: 45
 ```
 
-To add a description, add a ``LinesEntry`` on your ``QuestsEntry`` !
+To add a description on your quests, add a ``LinesEntry`` (simple or constrained) !
 
 ## 📖 Credits
 
