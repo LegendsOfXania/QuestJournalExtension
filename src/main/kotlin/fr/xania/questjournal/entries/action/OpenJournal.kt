@@ -28,35 +28,36 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.Material
-import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.InventoryHolder
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.UUID
 
-// Snippets
 val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Quests Journal")
-
-// Titles of quest menus
 val questMenuActiveTitleSnippet: String by snippet("journal.menu.active.title", "Active Quests")
 val questMenuInactiveTitleSnippet: String by snippet("journal.menu.inactive.title", "Inactive Quests")
 val questMenuCompletedTitleSnippet: String by snippet("journal.menu.completed.title", "Completed Quests")
 
-// Main menu buttons
 val mainMenuButtonsActiveName: String by snippet("journal.menu.main.buttons.active.name", "<green>See active quests")
 val mainMenuButtonsActiveType: String by snippet("journal.menu.main.buttons.active.type", "GREEN_BANNER")
 val mainMenuButtonsActiveModelData: Int by snippet("journal.menu.main.buttons.active.model-data", 0)
 val mainMenuButtonsActivePlace: Int by snippet("journal.menu.main.buttons.active.place", 20)
 
-val mainMenuButtonsInactiveName: String by snippet("journal.menu.main.buttons.inactive.name", "<yellow>See inactive quests")
+val mainMenuButtonsInactiveName: String by snippet(
+    "journal.menu.main.buttons.inactive.name",
+    "<yellow>See inactive quests"
+)
 val mainMenuButtonsInactiveType: String by snippet("journal.menu.main.buttons.inactive.type", "YELLOW_BANNER")
 val mainMenuButtonsInactiveModelData: Int by snippet("journal.menu.main.buttons.inactive.model-data", 0)
 val mainMenuButtonsInactivePlace: Int by snippet("journal.menu.main.buttons.inactive.place", 22)
 
-val mainMenuButtonsCompletedName: String by snippet("journal.menu.main.buttons.completed.name", "<gray>See completed quests")
+val mainMenuButtonsCompletedName: String by snippet(
+    "journal.menu.main.buttons.completed.name",
+    "<gray>See completed quests"
+)
 val mainMenuButtonsCompletedType: String by snippet("journal.menu.main.buttons.completed.type", "GRAY_BANNER")
 val mainMenuButtonsCompletedModelData: Int by snippet("journal.menu.main.buttons.completed.model-data", 0)
 val mainMenuButtonsCompletedPlace: Int by snippet("journal.menu.main.buttons.completed.place", 24)
 
-// Other snippets
 val questMenuButtonQuestType: String by snippet("journal.menu.quest.buttons.quest.type", "WRITTEN_BOOK")
 val questMenuButtonQuestModelData: Int by snippet("journal.menu.quest.buttons.quest.model-data", 0)
 
@@ -97,6 +98,22 @@ class OpenJournal(
         }.runTask(plugin)
     }
 
+    class QuestsJournalInventoryHolder(val status: QuestStatus) : InventoryHolder {
+        private lateinit var inventory: Inventory
+        override fun getInventory() = inventory
+        fun setInventory(inventory: Inventory) {
+            this.inventory = inventory
+        }
+    }
+
+    class MainJournalInventoryHolder : InventoryHolder {
+        private lateinit var inventory: Inventory
+        override fun getInventory() = inventory
+        fun setInventory(inventory: Inventory) {
+            this.inventory = inventory
+        }
+    }
+
     private fun String.splitComponents(vararg resolvers: TagResolver): List<Component> {
         val components = split("\n").map { it.asMiniWithResolvers(*resolvers) }.toMutableList()
 
@@ -115,51 +132,36 @@ class OpenJournal(
         material: Material,
         name: String,
         slot: Int,
-        customModelData: Int? = null,
-    ): Pair<ItemStack, Int> {
-        val item = ItemStack(material)
-        val meta: ItemMeta? = item.itemMeta
-
-        meta?.setDisplayName(name.asMini().legacy())
-
-        if (customModelData != null) {
-            meta?.setCustomModelData(customModelData)
+        customModelData: Int? = null
+    ) {
+        val item = ItemStack(material).apply {
+            itemMeta = itemMeta?.apply {
+                setDisplayName(name.asMini().legacy())
+                customModelData?.let { setCustomModelData(it) }
+            }
         }
-        item.itemMeta = meta
         menu.setItem(slot, item)
-
-        return Pair(item, slot)
     }
 
     private fun createQuestButton(
         player: Player,
         quest: QuestEntry,
-        menu: Inventory,
         material: Material,
         lore: List<Component>,
-        customModelData: Int? = null,
-    ): ItemStack {
-
-        return ItemStack(material).apply {
-            itemMeta = itemMeta?.apply {
-
-                val questname = "<white>${quest.displayName.get(player)}".parsePlaceholders(player).asMini().legacy()
-
-                setDisplayName(questname)
-
-                if (customModelData != null) {
-                    setCustomModelData(customModelData)
-                }
-
-                lore(lore)
-
-            }
+        customModelData: Int? = null
+    ) = ItemStack(material).apply {
+        itemMeta = itemMeta?.apply {
+            setDisplayName("<white>${quest.displayName.get(player)}".parsePlaceholders(player).asMini().legacy())
+            customModelData?.let { setCustomModelData(it) }
+            lore(lore)
         }
     }
 
     private fun createMainJournalInventory(player: Player): Inventory {
-        val mainMenu: Inventory =
-            plugin.server.createInventory(null, 54, mainMenuTitleSnippet.parsePlaceholders(player).asMini())
+        val holder = MainJournalInventoryHolder()
+        val mainMenu =
+            plugin.server.createInventory(holder, 54, mainMenuTitleSnippet.parsePlaceholders(player).asMini())
+        holder.setInventory(mainMenu)
 
         createSimpleButton(
             mainMenu,
@@ -187,61 +189,45 @@ class OpenJournal(
     }
 
     private fun createQuestsJournalInventory(player: Player, status: QuestStatus, title: String): Inventory {
+        val holder = QuestsJournalInventoryHolder(status)
+        val questsMenu = plugin.server.createInventory(holder, 54, title.parsePlaceholders(player).asMini())
+        holder.setInventory(questsMenu)
+
         val currentPage = Journal.playerPages[player.uniqueId] ?: 1
-        val questsMenu: Inventory =
-            plugin.server.createInventory(null, 54, title.parsePlaceholders(player).asMini())
-
-        val quests = Query.find<QuestEntry>().filter { quest -> quest.questStatus(player) == status }
-        val questsList = quests.toList()
-
+        val quests = Query.find<QuestEntry>().filter { it.questStatus(player) == status }.toList()
         val startIndex = (currentPage - 1) * 45
-        val endIndex = minOf(startIndex + 45, questsList.size)
+        val endIndex = minOf(startIndex + 45, quests.size)
 
-        if (startIndex < questsList.size) {
-            questsList.subList(startIndex, endIndex).forEachIndexed { index, quest ->
-
+        if (startIndex < quests.size) {
+            quests.subList(startIndex, endIndex).forEachIndexed { index, quest ->
                 val loreComponents = buildList<Component> {
                     val objectives = quest.children.descendants(ObjectiveEntry::class).mapNotNull { it.get() }
                     val desc = quest.children.descendants(LinesEntry::class).mapNotNull { it.get() }
-
-                    val displayObjectives = objectives.filter { objective -> player.inAudience(objective) }
+                    val displayObjectives = objectives.filter { player.inAudience(it) }
 
                     if (displayObjectives.isNotEmpty()) {
-                        displayObjectives.forEach { line ->
+                        displayObjectives.forEach {
                             addAll(
-                                line.display(player)
-                                    .parsePlaceholders(player)
-                                    .limitLineLength(30)
-                                    .splitComponents()
+                                it.display(player).parsePlaceholders(player).limitLineLength(30).splitComponents()
                             )
                         }
                     } else if (desc.isNotEmpty()) {
-
-                        val description = quest.children.descendants(LinesEntry::class)
-                            .mapNotNull { it.get()?.lines(player)?.parsePlaceholders(player) }
-                            .flatMap { it.lines() }
-                            .joinToString("\n")
-
-                        addAll(
-                            description
-                                .parsePlaceholders(player)
-                                .limitLineLength(30)
-                                .splitComponents()
-                        )
+                        val description = desc.joinToString("\n") { it.lines(player).parsePlaceholders(player) }
+                        addAll(description.parsePlaceholders(player).limitLineLength(30).splitComponents())
                     } else {
                         add(Component.text("<red>No description available.".asMini().legacy()))
                     }
                 }
-
-                val questButton = createQuestButton(
-                    player,
-                    quest,
-                    questsMenu,
-                    Material.valueOf(questMenuButtonQuestType),
-                    loreComponents,
-                    questMenuButtonQuestModelData
+                questsMenu.setItem(
+                    index,
+                    createQuestButton(
+                        player,
+                        quest,
+                        Material.valueOf(questMenuButtonQuestType),
+                        loreComponents,
+                        questMenuButtonQuestModelData
+                    )
                 )
-                questsMenu.setItem(index, questButton)
             }
         }
 
@@ -277,47 +263,77 @@ class OpenJournal(
         @EventHandler
         fun onInventoryClick(event: InventoryClickEvent) {
             val player = event.whoClicked as? Player ?: return
+            when (val holder = event.inventory.holder) {
+                is MainJournalInventoryHolder -> {
+                    event.isCancelled = true
+                    when (event.slot) {
+                        mainMenuButtonsActivePlace -> {
+                            playerPages[player.uniqueId] = 1
+                            player.openInventory(
+                                openJournalInstance.createQuestsJournalInventory(
+                                    player,
+                                    QuestStatus.ACTIVE,
+                                    questMenuActiveTitleSnippet
+                                )
+                            )
+                        }
 
-            if (event.view.title == mainMenuTitleSnippet) {
-                event.isCancelled = true
+                        mainMenuButtonsInactivePlace -> {
+                            playerPages[player.uniqueId] = 1
+                            player.openInventory(
+                                openJournalInstance.createQuestsJournalInventory(
+                                    player,
+                                    QuestStatus.INACTIVE,
+                                    questMenuInactiveTitleSnippet
+                                )
+                            )
+                        }
 
-                when (event.slot) {
-                    mainMenuButtonsActivePlace -> {
-                        Journal.playerPages[player.uniqueId] = 1
-                        player.openInventory(openJournalInstance.createQuestsJournalInventory(player, QuestStatus.ACTIVE, questMenuActiveTitleSnippet))
-                    }
-                    mainMenuButtonsInactivePlace -> {
-                        Journal.playerPages[player.uniqueId] = 1
-                        player.openInventory(openJournalInstance.createQuestsJournalInventory(player, QuestStatus.INACTIVE, questMenuInactiveTitleSnippet))
-                    }
-                    mainMenuButtonsCompletedPlace -> {
-                        Journal.playerPages[player.uniqueId] = 1
-                        player.openInventory(openJournalInstance.createQuestsJournalInventory(player, QuestStatus.COMPLETED, questMenuCompletedTitleSnippet))
+                        mainMenuButtonsCompletedPlace -> {
+                            playerPages[player.uniqueId] = 1
+                            player.openInventory(
+                                openJournalInstance.createQuestsJournalInventory(
+                                    player,
+                                    QuestStatus.COMPLETED,
+                                    questMenuCompletedTitleSnippet
+                                )
+                            )
+                        }
                     }
                 }
-            } else if (event.view.title == questMenuActiveTitleSnippet || event.view.title == questMenuInactiveTitleSnippet || event.view.title == questMenuCompletedTitleSnippet) {
-                event.isCancelled = true
 
-                val questStatus = when (event.view.title) {
-                    questMenuActiveTitleSnippet -> QuestStatus.ACTIVE
-                    questMenuInactiveTitleSnippet -> QuestStatus.INACTIVE
-                    questMenuCompletedTitleSnippet -> QuestStatus.COMPLETED
-                    else -> null
-                }
-
-                if (questStatus != null) {
+                is QuestsJournalInventoryHolder -> {
+                    event.isCancelled = true
+                    val questStatus = holder.status
                     when (event.slot) {
                         questMenuButtonNextPlace -> {
-                            Journal.playerPages[player.uniqueId] = (Journal.playerPages[player.uniqueId] ?: 1) + 1
-                            player.openInventory(openJournalInstance.createQuestsJournalInventory(player, questStatus, event.view.title))
+                            playerPages[player.uniqueId] = (playerPages[player.uniqueId] ?: 1) + 1
+                            player.openInventory(
+                                openJournalInstance.createQuestsJournalInventory(
+                                    player,
+                                    questStatus,
+                                    event.view.title
+                                )
+                            )
                         }
-                        questMenuButtonLeavePlace -> player.openInventory(openJournalInstance.createMainJournalInventory(player))
+
+                        questMenuButtonLeavePlace -> player.openInventory(
+                            openJournalInstance.createMainJournalInventory(
+                                player
+                            )
+                        )
+
                         questMenuButtonPreviousPlace -> {
-                            val currentPage = Journal.playerPages[player.uniqueId] ?: 1
+                            val currentPage = playerPages[player.uniqueId] ?: 1
                             if (currentPage > 1) {
-                                Journal.playerPages[player.uniqueId] = currentPage - 1
-                                player.openInventory(openJournalInstance.createQuestsJournalInventory(player, questStatus, event.view.title))
-                            }
+                                playerPages[player.uniqueId] = currentPage - 1
+                                player.openInventory(
+                                    openJournalInstance.createQuestsJournalInventory(
+                                        player,
+                                        questStatus,
+                                        event.view.title
+                                    )
+                                )
                             }
                         }
                     }
@@ -325,3 +341,4 @@ class OpenJournal(
             }
         }
     }
+}
