@@ -27,9 +27,8 @@ typewriter {
 
         dependencies {
             dependency("typewritermc", "Quest")
+            paper()
         }
-
-        paper()
     }
 }
 kotlin {
