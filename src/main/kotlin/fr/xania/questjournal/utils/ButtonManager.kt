@@ -33,12 +33,10 @@ fun createQuestButton(
     material: Material,
     lore: List<Component>,
     customModelData: Int? = null
-) {
-    val questButton = ItemStack(material).apply {
-        itemMeta = itemMeta?.apply {
-            displayName(quest.displayName.get(player).parsePlaceholders(player).asMini())
-            customModelData?.let { setCustomModelData(it) }
-            lore(lore)
-        }
+) = ItemStack(material).apply {
+    itemMeta = itemMeta?.apply {
+        displayName(quest.displayName.get(player).parsePlaceholders(player).asMini())
+        customModelData?.let { setCustomModelData(it) }
+        lore(lore)
     }
 }
