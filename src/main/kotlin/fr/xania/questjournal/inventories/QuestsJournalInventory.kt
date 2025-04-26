@@ -6,6 +6,7 @@ import com.typewritermc.engine.paper.entry.entries.LinesEntry
 import com.typewritermc.engine.paper.entry.inAudience
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
+import com.typewritermc.engine.paper.utils.asMini
 import com.typewritermc.engine.paper.utils.limitLineLength
 import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
@@ -22,17 +23,17 @@ import org.bukkit.inventory.Inventory
 
 fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJournal: OpenJournal): Inventory {
 
-    val menuTitle = Component.text(openJournal.questsMenuTitle)
+    val menuTitle = openJournal.questsMenuTitle.asMini()
     val menu = plugin.server.createInventory(QuestsJournalInventoryHolder(status), 54, menuTitle)
     //val page = Journal.Pages[player.uniqueId] ?: 0
 
     val quest = Query.find<QuestEntry>().filter { it.questStatus(player) == status }.toList()
 
-    val sIndex = (page - 1) * 45
-    val eIndex = minOf(sIndex + 45, quest.size)
+    //val sIndex = (page - 1) * 45
+    //val eIndex = minOf(sIndex + 45, quest.size)
 
-    if (sIndex < quest.size) {
-        quest.subList(sIndex, eIndex).forEachIndexed { index, quest ->
+    //if (sIndex < quest.size) {
+        quest./*subList(sIndex, eIndex).*/forEachIndexed { index, quest ->
 
             val lore = buildList {
 
@@ -62,26 +63,26 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJourna
                 createQuestButton(player, quest, Material.WRITTEN_BOOK, lore, customModelData = 0)
             )
         }
-    }
+    //}
 
     createSimpleButton(menu,
         49, Material.ARROW,
-        Component.text("<green>Back"),
-        listOf(Component.text("<gray>Click to go to the main page.")),
+        "<green>Back",
+        listOf("<gray>Click to go to the main page."),
         customModelData = 0
     )
 
     createSimpleButton(menu,
         53, Material.BARRIER,
-        Component.text("<green>Next Page"),
-        listOf(Component.text("<gray>Click to go to the next page.")),
+        "<green>Next Page",
+        listOf("<gray>Click to go to the next page."),
         customModelData = 0
     )
 
     createSimpleButton(menu,
         53, Material.ARROW,
-        Component.text("<green>Next Page"),
-        listOf(Component.text("<gray>Click to go to the next page.")),
+        "<green>Next Page",
+        listOf("<gray>Click to go to the next page."),
         customModelData = 0
     )
 

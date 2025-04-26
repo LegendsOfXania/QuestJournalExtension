@@ -13,15 +13,15 @@ fun createSimpleButton(
     menu: Inventory,
     slot: Int,
     material: Material,
-    name: Component,
-    lore: List<Component>,
+    name: String,
+    lore: List<String>,
     customModelData: Int? = null
 ) {
     val simpleButton = ItemStack(material).apply {
         itemMeta = itemMeta?.apply {
-            displayName(name)
+            displayName(name.asMini())
             customModelData?.let { setCustomModelData(it) }
-            lore(lore)
+            lore(lore.map { it.asMini() })
         }
     }
     menu.setItem(slot, simpleButton)
