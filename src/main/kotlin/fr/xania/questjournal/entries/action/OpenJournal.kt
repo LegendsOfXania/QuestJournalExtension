@@ -2,18 +2,15 @@ package fr.xania.questjournal.entries.action
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.core.extension.annotations.Colored
+import com.typewritermc.core.entries.priority
 import com.typewritermc.core.extension.annotations.Entry
-import com.typewritermc.core.extension.annotations.Help
-import com.typewritermc.core.extension.annotations.Placeholder
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
-import com.typewritermc.engine.paper.plugin
-import fr.xania.questjournal.inventories.createMainJournalInventory
-import org.bukkit.scheduler.BukkitRunnable
+import com.typewritermc.engine.paper.entry.entries.EventTrigger
+import fr.xania.questjournal.JournalStartTrigger
 import java.util.Collections.emptyList
 
 @Entry("open_journal", "The base of the Quests Journal.", Colors.RED, "mdi-light:book-multiple")
@@ -30,24 +27,15 @@ class OpenJournal(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
-
-    @Placeholder
-    @Colored
-    @Help("Title of the main journal menu.")
     val mainMenuTitle: String = "<aqua>Quest Journal",
-    @Placeholder
-    @Colored
-    @Help("Title of the quests menus.")
     val questsMenuTitle: String = "<aqua>Quest Journal",
 ) : ActionEntry {
-    override fun ActionTrigger.execute() {
-        disableAutomaticTriggering()
-        triggerManually()
-
-        object : BukkitRunnable() {
-            override fun run() {
-                val player = player
-                player.openInventory(createMainJournalInventory(openJournal = this@OpenJournal))}
-        }.runTask(plugin)
-    }
+    override val eventTriggers: List<EventTrigger>
+        get() = listOf(
+            JournalStartTrigger(
+                this.priority,
+                super.eventTriggers
+            )
+        )
+    override fun ActionTrigger.execute() {}
 }
