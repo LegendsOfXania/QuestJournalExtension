@@ -10,11 +10,11 @@ import com.typewritermc.engine.paper.utils.limitLineLength
 import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
+import com.typewritermc.engine.paper.utils.splitComponents
 import fr.xania.questjournal.entries.action.OpenJournal
 import fr.xania.questjournal.inventoryHolder.QuestsJournalInventoryHolder
 import fr.xania.questjournal.utils.createQuestButton
 import fr.xania.questjournal.utils.createSimpleButton
-import fr.xania.questjournal.utils.splitComponents
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -24,7 +24,7 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJourna
 
     val menuTitle = Component.text(openJournal.questsMenuTitle)
     val menu = plugin.server.createInventory(QuestsJournalInventoryHolder(status), 54, menuTitle)
-    val page = Journal.Pages[player.uniqueId] ?: 0
+    //val page = Journal.Pages[player.uniqueId] ?: 0
 
     val quest = Query.find<QuestEntry>().filter { it.questStatus(player) == status }.toList()
 
