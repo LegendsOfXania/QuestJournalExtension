@@ -11,7 +11,7 @@ Created by Legends of Xania.
 
 ## 📦 Installation  
 
-1. Download **TypeWriter 0.8.0-beta-151**. 
+1. Download **TypeWriter 0.8.0**. 
 2. Download **QuestJournalExtension.jar**.  
 3. Place it in the `plugins/TypeWriter/extensions/` folder.  
 4. Restart your server.  
