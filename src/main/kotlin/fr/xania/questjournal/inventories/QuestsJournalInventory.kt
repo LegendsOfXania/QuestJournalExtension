@@ -20,20 +20,21 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
+import java.util.*
 
-fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJournal: OpenJournal): Inventory {
+fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJournal: OpenJournal, pages: MutableMap<UUID, Int>): Inventory {
 
     val menuTitle = openJournal.questsMenuTitle.asMini()
     val menu = plugin.server.createInventory(QuestsJournalInventoryHolder(status), 54, menuTitle)
-    //val page = Journal.Pages[player.uniqueId] ?: 0
+    val page = pages[player.uniqueId] ?: 1
 
     val quest = Query.find<QuestEntry>().filter { it.questStatus(player) == status }.toList()
 
-    //val sIndex = (page - 1) * 45
-    //val eIndex = minOf(sIndex + 45, quest.size)
+    val sIndex = (page - 1) * 45
+    val eIndex = minOf(sIndex + 45, quest.size)
 
-    //if (sIndex < quest.size) {
-        quest./*subList(sIndex, eIndex).*/forEachIndexed { index, quest ->
+    if (sIndex < quest.size) {
+        quest.subList(sIndex, eIndex).forEachIndexed { index, quest ->
 
             val lore = buildList {
 
@@ -63,17 +64,17 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJourna
                 createQuestButton(player, quest, Material.WRITTEN_BOOK, lore, customModelData = 0)
             )
         }
-    //}
+    }
 
     createSimpleButton(menu,
-        49, Material.ARROW,
+        45, Material.ARROW,
         "<green>Back",
         listOf("<gray>Click to go to the main page."),
         customModelData = 0
     )
 
     createSimpleButton(menu,
-        53, Material.BARRIER,
+        49, Material.BARRIER,
         "<green>Next Page",
         listOf("<gray>Click to go to the next page."),
         customModelData = 0

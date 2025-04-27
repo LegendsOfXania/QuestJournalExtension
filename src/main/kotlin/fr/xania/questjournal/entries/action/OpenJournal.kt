@@ -10,7 +10,7 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
-import fr.xania.questjournal.JournalStartTrigger
+import fr.xania.questjournal.interaction.JournalStartTrigger
 import java.util.Collections.emptyList
 
 @Entry("open_journal", "The base of the Quests Journal.", Colors.RED, "mdi-light:book-multiple")
