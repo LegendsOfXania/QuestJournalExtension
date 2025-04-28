@@ -1,5 +1,6 @@
 package fr.xania.questjournal.interaction
 
+import com.typewritermc.core.interaction.InteractionContext
 import com.typewritermc.quest.QuestStatus
 import fr.xania.questjournal.entries.action.OpenJournal
 import fr.xania.questjournal.inventories.createMainJournalInventory
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 import java.util.*
 
 class JournalListener : Listener {
@@ -19,9 +21,9 @@ class JournalListener : Listener {
 
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
-        event.isCancelled = true
-
         val player = event.whoClicked as? Player ?: return
+
+        event.isCancelled = true
         when (val holder = event.inventory.holder) {
             is MainJournalInventoryHolder -> {
                 when (event.slot) {
@@ -30,11 +32,13 @@ class JournalListener : Listener {
                         val inventory = createQuestsJournalInventory(player, QuestStatus.ACTIVE, openJournal, pages)
                         player.openInventory(inventory)
                     }
+
                     22 -> {
                         pages[player.uniqueId] = 1
                         val inventory = createQuestsJournalInventory(player, QuestStatus.INACTIVE, openJournal, pages)
                         player.openInventory(inventory)
                     }
+
                     24 -> {
                         pages[player.uniqueId] = 1
                         val inventory = createQuestsJournalInventory(player, QuestStatus.COMPLETED, openJournal, pages)
@@ -42,11 +46,12 @@ class JournalListener : Listener {
                     }
                 }
             }
+
             is QuestsJournalInventoryHolder -> {
                 val questStatus = holder.status
                 when (event.slot) {
                     45 -> {
-                        if ((pages[player.uniqueId] ?: 1) <= 1)  {
+                        if ((pages[player.uniqueId] ?: 1) <= 1) {
                             return
                         } else {
                             pages[player.uniqueId] = (pages[player.uniqueId] ?: 1) - 1
@@ -54,10 +59,12 @@ class JournalListener : Listener {
                             player.openInventory(inventory)
                         }
                     }
+
                     49 -> {
                         val inventory = createMainJournalInventory(openJournal)
                         player.openInventory(inventory)
                     }
+
                     53 -> {
                         pages[player.uniqueId] = (pages[player.uniqueId] ?: 1) + 1
                         val inventory = createQuestsJournalInventory(player, questStatus, openJournal, pages)
@@ -65,6 +72,16 @@ class JournalListener : Listener {
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    fun onInventoryClose(event: InventoryCloseEvent) {
+        val player = event.player as? Player ?: return
+
+        if (event.inventory.holder is MainJournalInventoryHolder || event.inventory.holder is QuestsJournalInventoryHolder) {
+            val journalInteraction = JournalInteraction(player, JournalInteraction, 1, openJournal, emptyList())
+            journalInteraction.closedJournal = true
         }
     }
 }

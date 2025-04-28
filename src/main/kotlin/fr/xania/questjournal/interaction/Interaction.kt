@@ -10,7 +10,6 @@ import fr.xania.questjournal.entries.action.OpenJournal
 import fr.xania.questjournal.inventories.createMainJournalInventory
 import org.bukkit.entity.Player
 import java.time.Duration
-import java.util.UUID
 
 class JournalInteraction(
     private val player: Player,
@@ -19,7 +18,8 @@ class JournalInteraction(
     val openJournal: OpenJournal,
     val eventTriggers: List<EventTrigger>
 ) : Interaction {
-    private val pages: MutableMap<UUID, Int> = mutableMapOf()
+
+    var closedJournal = false
 
     override suspend fun initialize(): Result<Unit> {
         plugin.server.scheduler.runTask(plugin, Runnable {
@@ -40,5 +40,7 @@ class JournalInteraction(
         player.sendMessage("Ending Journal interaction")
     }
 
-    private fun shouldEnd(): Boolean = false
+    private fun shouldEnd(): Boolean {
+        return closedJournal
+    }
 }
