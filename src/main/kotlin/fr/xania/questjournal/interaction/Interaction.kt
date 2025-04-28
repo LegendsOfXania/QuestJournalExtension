@@ -6,8 +6,11 @@ import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.plugin
+import com.typewritermc.quest.QuestStatus
 import fr.xania.questjournal.entries.action.OpenJournal
 import fr.xania.questjournal.inventories.createMainJournalInventory
+import fr.xania.questjournal.inventoryHolder.MainJournalInventoryHolder
+import fr.xania.questjournal.inventoryHolder.QuestsJournalInventoryHolder
 import org.bukkit.entity.Player
 import java.time.Duration
 
@@ -18,8 +21,6 @@ class JournalInteraction(
     val openJournal: OpenJournal,
     val eventTriggers: List<EventTrigger>
 ) : Interaction {
-
-    var closedJournal = false
 
     override suspend fun initialize(): Result<Unit> {
         plugin.server.scheduler.runTask(plugin, Runnable {
@@ -41,6 +42,7 @@ class JournalInteraction(
     }
 
     private fun shouldEnd(): Boolean {
-        return closedJournal
+        val holder = player.openInventory.topInventory.holder ?: return true
+        return holder !is MainJournalInventoryHolder && holder !is QuestsJournalInventoryHolder
     }
 }

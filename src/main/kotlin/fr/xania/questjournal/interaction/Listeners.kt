@@ -1,7 +1,8 @@
 package fr.xania.questjournal.interaction
 
 import com.typewritermc.core.interaction.InteractionContext
-import com.typewritermc.engine.paper.entry.entries.EventTrigger
+import com.typewritermc.engine.paper.entry.entries.InteractionEndTrigger
+import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.quest.QuestStatus
 import fr.xania.questjournal.entries.action.OpenJournal
 import fr.xania.questjournal.inventories.createMainJournalInventory
@@ -73,23 +74,6 @@ class JournalListener : Listener {
                     }
                 }
             }
-        }
-    }
-
-    @EventHandler
-    fun onInventoryClose(event: InventoryCloseEvent) {
-
-        if (event.inventory.holder is MainJournalInventoryHolder || event.inventory.holder is QuestsJournalInventoryHolder) {
-
-
-            val player = event.player as? Player ?: return
-            val context = InteractionContext(mapOf())
-            val priority = 1
-            val openJournal = OpenJournal()
-            val eventTriggers = emptyList<EventTrigger>()
-
-            val journalInteraction = JournalInteraction(player, context, priority, openJournal, eventTriggers)
-            journalInteraction.closedJournal = true
         }
     }
 }
