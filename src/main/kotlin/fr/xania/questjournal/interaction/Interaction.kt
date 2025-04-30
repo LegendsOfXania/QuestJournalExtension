@@ -6,7 +6,6 @@ import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.plugin
-import com.typewritermc.quest.QuestStatus
 import fr.xania.questjournal.entries.action.OpenJournal
 import fr.xania.questjournal.inventories.createMainJournalInventory
 import fr.xania.questjournal.inventoryHolder.MainJournalInventoryHolder
@@ -42,7 +41,8 @@ class JournalInteraction(
     }
 
     private fun shouldEnd(): Boolean {
-        val holder = player.openInventory.topInventory.holder ?: return true
+        val inventory = player.openInventory.topInventory
+        val holder = inventory.holder
         return holder !is MainJournalInventoryHolder && holder !is QuestsJournalInventoryHolder
     }
 }
