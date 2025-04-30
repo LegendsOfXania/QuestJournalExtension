@@ -26,14 +26,21 @@ class JournalInteraction(
             player.openInventory(createMainJournalInventory(openJournal))
             player.sendMessage("Starting Journal interaction")
         })
-        return ok(Unit)
+            return ok(Unit)
     }
 
     override suspend fun tick(deltaTime: Duration) {
         player.sendMessage("Ticking Journal Interaction")
-        if (shouldEnd()) {
-            JournalStopTrigger.triggerFor(player, context)
-        }
+
+        plugin.server.scheduler.runTaskLater(
+            plugin,
+            Runnable {
+                if (shouldEnd()) {
+                    JournalStopTrigger.triggerFor(player, context)
+                }
+            },
+            1L
+        )
     }
 
     override suspend fun teardown(force: Boolean) {
