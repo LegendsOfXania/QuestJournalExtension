@@ -12,19 +12,19 @@ import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
 import com.typewritermc.engine.paper.utils.splitComponents
-import fr.xania.questjournal.entries.action.OpenJournal
+import fr.xania.questjournal.entries.action.*
 import fr.xania.questjournal.inventoryHolder.QuestsJournalInventoryHolder
+import fr.xania.questjournal.utils.asMiniwithoutItalic
 import fr.xania.questjournal.utils.createQuestButton
 import fr.xania.questjournal.utils.createSimpleButton
-import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import java.util.*
 
-fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJournal: OpenJournal, pages: MutableMap<UUID, Int>): Inventory {
+fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: MutableMap<UUID, Int>): Inventory {
 
-    val menuTitle = openJournal.questsMenuTitle.asMini()
+    val menuTitle = questMenuActiveTitleSnippet.parsePlaceholders(player).asMini()
     val menu = plugin.server.createInventory(QuestsJournalInventoryHolder(status), 54, menuTitle)
     val page = pages[player.uniqueId] ?: 1
 
@@ -56,35 +56,37 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, openJourna
                         loreDescritpion.parsePlaceholders(player).limitLineLength(40).splitComponents()
                     )
                 } else {
-                    add(Component.text("<gray>No description available"))
+                    addAll(
+                        questMenuButtonQuestLore.map { it.parsePlaceholders(player).asMiniwithoutItalic() }
+                    )
                 }
             }
             menu.setItem(
                 index,
-                createQuestButton(player, quest, Material.WRITTEN_BOOK, lore, customModelData = 0)
+                createQuestButton(player, quest, Material.getMaterial(questMenuButtonQuestType) ?: Material.WRITTEN_BOOK, lore, questMenuButtonQuestModelData)
             )
         }
     }
 
     createSimpleButton(menu,
-        45, Material.ARROW,
-        "<green>Back",
-        listOf("<gray>Click to go to the main page."),
-        customModelData = 0
+        questMenuButtonPreviousPlace, Material.getMaterial(questMenuButtonPreviousType) ?: Material.ARROW,
+        questMenuButtonPreviousTitle,
+        questMenuButtonPreviousLore,
+        questMenuButtonPreviousModelData
     )
 
     createSimpleButton(menu,
-        49, Material.BARRIER,
-        "<green>Next Page",
-        listOf("<gray>Click to go to the next page."),
-        customModelData = 0
+        questMenuButtonLeavePlace, Material.getMaterial(questMenuButtonLeaveType) ?: Material.BARRIER,
+        questMenuButtonLeaveTitle,
+        questMenuButtonLeaveLore,
+        questMenuButtonLeaveModelData
     )
 
     createSimpleButton(menu,
-        53, Material.ARROW,
-        "<green>Next Page",
-        listOf("<gray>Click to go to the next page."),
-        customModelData = 0
+        questMenuButtonNextPlace, Material.getMaterial(questMenuButtonNextType) ?: Material.ARROW,
+        questMenuButtonNextTitle,
+        questMenuButtonNextLore,
+        questMenuButtonNextModelData
     )
 
     return menu

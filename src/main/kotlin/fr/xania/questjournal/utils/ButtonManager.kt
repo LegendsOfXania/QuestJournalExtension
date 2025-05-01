@@ -1,7 +1,6 @@
 package fr.xania.questjournal.utils
 
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
-import com.typewritermc.engine.paper.utils.asMini
 import com.typewritermc.quest.QuestEntry
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -19,9 +18,9 @@ fun createSimpleButton(
 ) {
     val simpleButton = ItemStack(material).apply {
         itemMeta = itemMeta?.apply {
-            displayName(name.asMini())
+            displayName(name.asMiniwithoutItalic())
             customModelData?.let { setCustomModelData(it) }
-            lore(lore.map { it.asMini() })
+            lore(lore.map { it.asMiniwithoutItalic() })
         }
     }
     menu.setItem(slot, simpleButton)
@@ -35,7 +34,7 @@ fun createQuestButton(
     customModelData: Int? = null
 ) = ItemStack(material).apply {
     itemMeta = itemMeta?.apply {
-        displayName(quest.displayName.get(player).parsePlaceholders(player).asMini())
+        displayName(quest.displayName.get(player).parsePlaceholders(player).asMiniwithoutItalic())
         customModelData?.let { setCustomModelData(it) }
         lore(lore)
     }

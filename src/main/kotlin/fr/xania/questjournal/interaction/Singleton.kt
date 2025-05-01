@@ -7,7 +7,6 @@ import com.typewritermc.engine.paper.entry.entries.Event
 import com.typewritermc.engine.paper.interaction.TriggerContinuation
 import com.typewritermc.engine.paper.interaction.TriggerHandler
 import com.typewritermc.engine.paper.plugin
-import fr.xania.questjournal.entries.action.OpenJournal
 
 @Singleton
 object JournalInitializer : Initializable {
@@ -47,7 +46,6 @@ class JournalTriggerHandler : TriggerHandler {
                 event.player,
                 event.context,
                 trigger.priority,
-                openJournal = OpenJournal(),
                 trigger.eventTriggers
             )
         )

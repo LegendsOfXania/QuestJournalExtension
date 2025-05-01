@@ -1,35 +1,37 @@
 package fr.xania.questjournal.inventories
 
+import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.asMini
-import fr.xania.questjournal.entries.action.OpenJournal
+import fr.xania.questjournal.entries.action.*
 import fr.xania.questjournal.inventoryHolder.MainJournalInventoryHolder
 import fr.xania.questjournal.utils.createSimpleButton
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 
-fun createMainJournalInventory(openJournal: OpenJournal): Inventory {
+fun createMainJournalInventory(player: Player): Inventory {
 
-    val menuTitle = openJournal.mainMenuTitle.asMini()
+    val menuTitle = mainMenuTitleSnippet.parsePlaceholders(player).asMini()
     val menu = plugin.server.createInventory(MainJournalInventoryHolder(), 54, menuTitle)
 
     createSimpleButton(menu,
-        20, Material.EMERALD,
-        "<green>Actives Quests",
-        listOf("<gray>Click to open your quests", "<gray>and see your progress"),
-        customModelData = 1)
+        mainMenuButtonsActivePlace, Material.getMaterial(mainMenuButtonsActiveType) ?: Material.GREEN_BANNER,
+        mainMenuButtonsActiveName,
+        mainMenuButtonsActiveLore,
+        mainMenuButtonsActiveModelData)
 
     createSimpleButton(menu,
-        22, Material.REDSTONE,
-        "<green>Inactives Quests",
-        listOf("<gray>Click to open your quests", "<gray>and see your progress"),
-        customModelData = 2)
+        mainMenuButtonsInactivePlace, Material.getMaterial(mainMenuButtonsInactiveType) ?: Material.YELLOW_BANNER,
+        mainMenuButtonsInactiveName,
+        mainMenuButtonsInactiveLore,
+        mainMenuButtonsInactiveModelData)
 
     createSimpleButton(menu,
-        24, Material.DIAMOND,
-        "<green>Completed Quests",
-        listOf("<gray>Click to open your quests", "<gray>and see your progress"),
-        customModelData = 3)
+        mainMenuButtonsCompletedPlace, Material.getMaterial(mainMenuButtonsCompletedType) ?: Material.GRAY_BANNER,
+        mainMenuButtonsCompletedName,
+        mainMenuButtonsCompletedLore,
+        mainMenuButtonsCompletedModelData)
 
     return menu
 }

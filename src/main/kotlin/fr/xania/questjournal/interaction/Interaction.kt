@@ -6,7 +6,6 @@ import com.typewritermc.core.utils.ok
 import com.typewritermc.engine.paper.entry.entries.EventTrigger
 import com.typewritermc.engine.paper.entry.triggerFor
 import com.typewritermc.engine.paper.plugin
-import fr.xania.questjournal.entries.action.OpenJournal
 import fr.xania.questjournal.inventories.createMainJournalInventory
 import fr.xania.questjournal.inventoryHolder.MainJournalInventoryHolder
 import fr.xania.questjournal.inventoryHolder.QuestsJournalInventoryHolder
@@ -17,13 +16,12 @@ class JournalInteraction(
     private val player: Player,
     override val context: InteractionContext,
     override val priority: Int,
-    val openJournal: OpenJournal,
     val eventTriggers: List<EventTrigger>
 ) : Interaction {
 
     override suspend fun initialize(): Result<Unit> {
         plugin.server.scheduler.runTask(plugin, Runnable {
-            player.openInventory(createMainJournalInventory(openJournal))
+            player.openInventory(createMainJournalInventory(player))
             player.sendMessage("Starting Journal interaction")
         })
             return ok(Unit)
@@ -32,8 +30,7 @@ class JournalInteraction(
     override suspend fun tick(deltaTime: Duration) {
         player.sendMessage("Ticking Journal Interaction")
 
-        plugin.server.scheduler.runTaskLater(
-            plugin,
+        plugin.server.scheduler.runTaskLater(plugin,
             Runnable {
                 if (shouldEnd()) {
                     JournalStopTrigger.triggerFor(player, context)
