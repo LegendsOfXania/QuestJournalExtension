@@ -27,49 +27,60 @@ journal:
       title: Quests Journal
       buttons:
         active:
-          name: <green>See all actives quests
-# The type of the item
+          name: <green>See active quests
           type: GREEN_BANNER
-# The Custom Model Data of the item. Set to 0 if it doesn't have any.
           model-data: 0
-# The place of the item in the Menu
           place: 20
+          lore:
+          - <gray>Click <i>to open your quests</i>
+          - <gray>and see your progress
         inactive:
-          name: <yellow>See all inactives quests
+          name: <yellow>See inactive quests
           type: YELLOW_BANNER
           model-data: 0
           place: 22
+          lore:
+          - <gray>Click to open your quests
+          - <gray>and see your progress
         completed:
-          name: <gray>See all completed quests
+          name: <gray>See completed quests
           type: GRAY_BANNER
           model-data: 0
           place: 24
-    active:
-      title: Quêtes Actives
-    inactive:
-      title: Quêtes Inactives
-    completed:
-      title: Quêtes Completed
+          lore:
+          - <gray>Click to open your quests
+          - <gray>and see your progress
+    quests:
+      title: Quests
     quest:
       buttons:
         quest:
           type: WRITTEN_BOOK
           model-data: 0
+          lore:
+          - <red>No description available
         leave:
-          title: <red>Back
+          title: <red>Leave
           type: BARRIER
           model-data: 0
           place: 49
+          lore:
+          - <red>Click to leave the menu
         next:
           title: <yellow>Next
-          type: BRICK
-          model-data: 10006
+          type: ARROW
+          model-data: 0
           place: 53
+          lore:
+          - <red>Click to go to the next page
         previous:
           title: <yellow>Previous
           type: ARROW
           model-data: 0
           place: 45
+          lore:
+          - <red>Click to go to the previous page
+
 ```
 
 ## 📖 Credits
