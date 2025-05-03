@@ -22,7 +22,7 @@ typewriter {
             |in a single menu, organized by status and tracking progress.
             |Create by the Legends of Xania.
             """.trimMargin()
-        engineVersion = "0.8.0-beta-157"
+        engineVersion = "0.8.0-beta-158"
         channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
 
         dependencies {

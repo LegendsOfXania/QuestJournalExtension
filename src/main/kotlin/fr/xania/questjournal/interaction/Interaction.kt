@@ -22,14 +22,11 @@ class JournalInteraction(
     override suspend fun initialize(): Result<Unit> {
         plugin.server.scheduler.runTask(plugin, Runnable {
             player.openInventory(createMainJournalInventory(player))
-            player.sendMessage("Starting Journal interaction")
         })
             return ok(Unit)
     }
 
     override suspend fun tick(deltaTime: Duration) {
-        player.sendMessage("Ticking Journal Interaction")
-
         plugin.server.scheduler.runTaskLater(plugin,
             Runnable {
                 if (shouldEnd()) {
@@ -40,9 +37,7 @@ class JournalInteraction(
         )
     }
 
-    override suspend fun teardown(force: Boolean) {
-        player.sendMessage("Ending Journal interaction")
-    }
+    override suspend fun teardown(force: Boolean) {}
 
     private fun shouldEnd(): Boolean {
         val inventory = player.openInventory.topInventory

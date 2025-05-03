@@ -19,9 +19,9 @@ class JournalListener : Listener {
     fun onInventoryClick(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
 
-        event.isCancelled = true
         when (val holder = event.inventory.holder) {
             is MainJournalInventoryHolder -> {
+                event.isCancelled = true
                 when (event.slot) {
                     20 -> {
                         pages[player.uniqueId] = 1
@@ -45,6 +45,7 @@ class JournalListener : Listener {
 
             is QuestsJournalInventoryHolder -> {
                 val questStatus = holder.status
+                event.isCancelled = true
                 when (event.slot) {
                     45 -> {
                         if ((pages[player.uniqueId] ?: 1) <= 1) {
