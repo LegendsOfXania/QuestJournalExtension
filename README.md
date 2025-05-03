@@ -50,9 +50,8 @@ journal:
           lore:
           - <gray>Click to open your quests
           - <gray>and see your progress
-    quests:
-      title: Quests
     quest:
+      title: Quests
       buttons:
         quest:
           type: WRITTEN_BOOK

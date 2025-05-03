@@ -15,7 +15,7 @@ import fr.xania.questjournal.interaction.JournalStartTrigger
 import java.util.Collections.emptyList
 
 val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Quests Journal")
-val questMenuActiveTitleSnippet: String by snippet("journal.menu.quests.title", "Quests")
+val questMenuActiveTitleSnippet: String by snippet("journal.menu.quest.title", "Quests")
 
 val mainMenuButtonsActiveName: String by snippet("journal.menu.main.buttons.active.name", "<green>See active quests")
 val mainMenuButtonsActiveType: String by snippet("journal.menu.main.buttons.active.type", "GREEN_BANNER")
