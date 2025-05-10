@@ -1,6 +1,7 @@
 package fr.xania.questjournal.interaction
 
 import com.typewritermc.quest.QuestStatus
+import fr.xania.questjournal.entries.action.*
 import fr.xania.questjournal.inventories.createMainJournalInventory
 import fr.xania.questjournal.inventories.createQuestsJournalInventory
 import fr.xania.questjournal.inventoryHolder.MainJournalInventoryHolder
@@ -23,19 +24,19 @@ class JournalListener : Listener {
             is MainJournalInventoryHolder -> {
                 event.isCancelled = true
                 when (event.slot) {
-                    20 -> {
+                    mainMenuButtonsActivePlace -> {
                         pages[player.uniqueId] = 1
                         val inventory = createQuestsJournalInventory(player, QuestStatus.ACTIVE, pages)
                         player.openInventory(inventory)
                     }
 
-                    22 -> {
+                    mainMenuButtonsInactivePlace -> {
                         pages[player.uniqueId] = 1
                         val inventory = createQuestsJournalInventory(player, QuestStatus.INACTIVE, pages)
                         player.openInventory(inventory)
                     }
 
-                    24 -> {
+                    mainMenuButtonsCompletedPlace -> {
                         pages[player.uniqueId] = 1
                         val inventory = createQuestsJournalInventory(player, QuestStatus.COMPLETED, pages)
                         player.openInventory(inventory)
@@ -47,7 +48,10 @@ class JournalListener : Listener {
                 val questStatus = holder.status
                 event.isCancelled = true
                 when (event.slot) {
-                    45 -> {
+
+                    0-
+
+                    questMenuButtonPreviousPlace -> {
                         if ((pages[player.uniqueId] ?: 1) <= 1) {
                             return
                         } else {
@@ -57,12 +61,12 @@ class JournalListener : Listener {
                         }
                     }
 
-                    49 -> {
+                    questMenuButtonLeavePlace -> {
                         val inventory = createMainJournalInventory(player)
                         player.openInventory(inventory)
                     }
 
-                    53 -> {
+                    questMenuButtonNextPlace -> {
                         pages[player.uniqueId] = (pages[player.uniqueId] ?: 1) + 1
                         val inventory = createQuestsJournalInventory(player, questStatus, pages)
                         player.openInventory(inventory)
