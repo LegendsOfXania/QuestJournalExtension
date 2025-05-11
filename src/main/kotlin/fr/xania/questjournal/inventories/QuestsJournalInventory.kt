@@ -22,32 +22,25 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import java.util.*
 
-data class QuestJournalResult(
-    val inventory: Inventory,
-    val questSlots: Map<Int, QuestEntry>
-)
+fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: MutableMap<UUID, Int>): Inventory {
 
-fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: MutableMap<UUID, Int>): QuestJournalResult {
-
-    val page = pages[player.uniqueId] ?: 1
     val menuTitle = questMenuActiveTitleSnippet.parsePlaceholders(player).asMini()
-    val questSlotMap = mutableMapOf<Int, QuestEntry>()
-    val quests = Query.find<QuestEntry>().filter { it.questStatus(player) == status }.toList()
+    val menu = plugin.server.createInventory(QuestsJournalInventoryHolder(status), 54, menuTitle)
+    val page = pages[player.uniqueId] ?: 1
+
+    val quest = Query.find<QuestEntry>().filter { it.questStatus(player) == status }.toList()
 
     val sIndex = (page - 1) * 45
-    val eIndex = minOf(sIndex + 45, quests.size)
+    val eIndex = minOf(sIndex + 45, quest.size)
 
-    val holder = QuestsJournalInventoryHolder(status)
-    val menu = plugin.server.createInventory(holder, 54, menuTitle)
-
-    if (sIndex < quests.size) {
-        quests.subList(sIndex, eIndex).forEachIndexed { index, quest ->
-
-            questSlotMap[index] = quest
+    if (sIndex < quest.size) {
+        quest.subList(sIndex, eIndex).forEachIndexed { index, quest ->
 
             val lore = buildList {
+
                 val objectives = quest.children.descendants(ObjectiveEntry::class).mapNotNull { it.get() }
                 val displayedObjective = objectives.filter { player.inAudience(it) }
+
                 val description = quest.children.descendants(LinesEntry::class).mapNotNull { it.get() }
 
                 if (displayedObjective.isNotEmpty()) {
@@ -57,6 +50,7 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: Mut
                         )
                     }
                 } else if (description.isNotEmpty()) {
+
                     val loreDescritpion = description.joinToString("\n") { it.lines(player) }
                     addAll(
                         loreDescritpion.parsePlaceholders(player).limitLineLength(40).splitComponents()
@@ -67,7 +61,6 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: Mut
                     )
                 }
             }
-
             menu.setItem(
                 index,
                 createQuestButton(player, quest, Material.getMaterial(questMenuButtonQuestType) ?: Material.WRITTEN_BOOK, lore, questMenuButtonQuestModelData)
@@ -96,5 +89,5 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: Mut
         questMenuButtonNextModelData
     )
 
-    return QuestJournalResult(menu, questSlotMap)
+    return menu
 }
