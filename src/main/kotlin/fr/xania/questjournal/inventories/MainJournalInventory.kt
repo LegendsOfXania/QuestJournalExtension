@@ -15,23 +15,29 @@ fun createMainJournalInventory(player: Player): Inventory {
     val menuTitle = mainMenuTitleSnippet.parsePlaceholders(player).asMini()
     val menu = plugin.server.createInventory(MainJournalInventoryHolder(), 54, menuTitle)
 
-    createSimpleButton(menu,
-        mainMenuButtonsActivePlace, Material.getMaterial(mainMenuButtonsActiveType) ?: Material.GREEN_BANNER,
-        mainMenuButtonsActiveName,
-        mainMenuButtonsActiveLore,
-        mainMenuButtonsActiveModelData)
+    if (mainMenuButtonsActiveEnabled) {
+        createSimpleButton(menu,
+            mainMenuButtonsActivePlace, Material.getMaterial(mainMenuButtonsActiveType) ?: Material.GREEN_BANNER,
+            mainMenuButtonsActiveName,
+            mainMenuButtonsActiveLore,
+            mainMenuButtonsActiveModelData)
+    }
 
-    createSimpleButton(menu,
-        mainMenuButtonsInactivePlace, Material.getMaterial(mainMenuButtonsInactiveType) ?: Material.YELLOW_BANNER,
-        mainMenuButtonsInactiveName,
-        mainMenuButtonsInactiveLore,
-        mainMenuButtonsInactiveModelData)
+    if (mainMenuButtonsInactiveEnabled) {
+        createSimpleButton(menu,
+            mainMenuButtonsInactivePlace, Material.getMaterial(mainMenuButtonsInactiveType) ?: Material.YELLOW_BANNER,
+            mainMenuButtonsInactiveName,
+            mainMenuButtonsInactiveLore,
+            mainMenuButtonsInactiveModelData)
+    }
 
-    createSimpleButton(menu,
-        mainMenuButtonsCompletedPlace, Material.getMaterial(mainMenuButtonsCompletedType) ?: Material.GRAY_BANNER,
-        mainMenuButtonsCompletedName,
-        mainMenuButtonsCompletedLore,
-        mainMenuButtonsCompletedModelData)
+    if (mainMenuButtonsCompletedEnabled) {
+        createSimpleButton(menu,
+            mainMenuButtonsCompletedPlace, Material.getMaterial(mainMenuButtonsCompletedType) ?: Material.GRAY_BANNER,
+            mainMenuButtonsCompletedName,
+            mainMenuButtonsCompletedLore,
+            mainMenuButtonsCompletedModelData)
+    }
 
     return menu
 }

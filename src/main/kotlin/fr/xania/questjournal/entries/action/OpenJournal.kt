@@ -17,25 +17,28 @@ import java.util.Collections.emptyList
 val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Quests Journal")
 val questMenuActiveTitleSnippet: String by snippet("journal.menu.quest.title", "Quests")
 
+val mainMenuButtonsActiveEnabled: Boolean by snippet("journal.menu.main.buttons.active.enabled", true)
 val mainMenuButtonsActiveName: String by snippet("journal.menu.main.buttons.active.name", "<green>See active quests")
 val mainMenuButtonsActiveType: String by snippet("journal.menu.main.buttons.active.type", "GREEN_BANNER")
 val mainMenuButtonsActiveModelData: Int by snippet("journal.menu.main.buttons.active.model-data", 0)
 val mainMenuButtonsActivePlace: Int by snippet("journal.menu.main.buttons.active.place", 20)
 val mainMenuButtonsActiveLore: List<String> by snippet("journal.menu.main.buttons.active.lore", listOf("<gray>Click to open your quests", "<gray>and see your progress"))
 
+val mainMenuButtonsInactiveEnabled: Boolean by snippet("journal.menu.main.buttons.inactive.enabled", true)
 val mainMenuButtonsInactiveName: String by snippet("journal.menu.main.buttons.inactive.name", "<yellow>See inactive quests")
 val mainMenuButtonsInactiveType: String by snippet("journal.menu.main.buttons.inactive.type", "YELLOW_BANNER")
 val mainMenuButtonsInactiveModelData: Int by snippet("journal.menu.main.buttons.inactive.model-data", 0)
 val mainMenuButtonsInactivePlace: Int by snippet("journal.menu.main.buttons.inactive.place", 22)
 val mainMenuButtonsInactiveLore: List<String> by snippet("journal.menu.main.buttons.inactive.lore", listOf("<gray>Click to open your quests", "<gray>and see your progress"))
 
+val mainMenuButtonsCompletedEnabled: Boolean by snippet("journal.menu.main.buttons.completed.enabled", true)
 val mainMenuButtonsCompletedName: String by snippet("journal.menu.main.buttons.completed.name", "<gray>See completed quests")
 val mainMenuButtonsCompletedType: String by snippet("journal.menu.main.buttons.completed.type", "GRAY_BANNER")
 val mainMenuButtonsCompletedModelData: Int by snippet("journal.menu.main.buttons.completed.model-data", 0)
 val mainMenuButtonsCompletedPlace: Int by snippet("journal.menu.main.buttons.completed.place", 24)
 val mainMenuButtonsCompletedLore: List<String> by snippet("journal.menu.main.buttons.completed.lore", listOf("<gray>Click to open your quests", "<gray>and see your progress"))
 
-
+val questMenuButtonQuestEnabled: Boolean by snippet("journal.menu.quest.buttons.quest.enabled", true)
 val questMenuButtonQuestType: String by snippet("journal.menu.quest.buttons.quest.type", "WRITTEN_BOOK")
 val questMenuButtonQuestModelData: Int by snippet("journal.menu.quest.buttons.quest.model-data", 0)
 val questMenuButtonQuestLore: List<String> by snippet("journal.menu.quest.buttons.quest.lore", listOf("<red>No description available"))

@@ -48,9 +48,6 @@ class JournalListener : Listener {
                 val questStatus = holder.status
                 event.isCancelled = true
                 when (event.slot) {
-
-                    0-
-
                     questMenuButtonPreviousPlace -> {
                         if ((pages[player.uniqueId] ?: 1) <= 1) {
                             return
