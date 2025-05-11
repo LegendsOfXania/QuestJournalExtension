@@ -27,6 +27,7 @@ journal:
       title: Quests Journal
       buttons:
         active:
+         enabled: true
           name: <green>See active quests
           type: GREEN_BANNER
           model-data: 0
@@ -35,6 +36,7 @@ journal:
           - <gray>Click <i>to open your quests</i>
           - <gray>and see your progress
         inactive:
+         enabled: true
           name: <yellow>See inactive quests
           type: YELLOW_BANNER
           model-data: 0
@@ -43,6 +45,7 @@ journal:
           - <gray>Click to open your quests
           - <gray>and see your progress
         completed:
+         enabled: true
           name: <gray>See completed quests
           type: GRAY_BANNER
           model-data: 0
