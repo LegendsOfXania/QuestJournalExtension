@@ -20,7 +20,7 @@ fun createMainJournalInventory(player: Player): Inventory {
             mainMenuButtonsActivePlace, Material.getMaterial(mainMenuButtonsActiveType) ?: Material.GREEN_BANNER,
             mainMenuButtonsActiveName,
             mainMenuButtonsActiveLore,
-            mainMenuButtonsActiveModelData)
+            mainMenuButtonsActiveModelData.toFloat())
     }
 
     if (mainMenuButtonsInactiveEnabled) {
@@ -28,7 +28,7 @@ fun createMainJournalInventory(player: Player): Inventory {
             mainMenuButtonsInactivePlace, Material.getMaterial(mainMenuButtonsInactiveType) ?: Material.YELLOW_BANNER,
             mainMenuButtonsInactiveName,
             mainMenuButtonsInactiveLore,
-            mainMenuButtonsInactiveModelData)
+            mainMenuButtonsInactiveModelData.toFloat())
     }
 
     if (mainMenuButtonsCompletedEnabled) {
@@ -36,7 +36,7 @@ fun createMainJournalInventory(player: Player): Inventory {
             mainMenuButtonsCompletedPlace, Material.getMaterial(mainMenuButtonsCompletedType) ?: Material.GRAY_BANNER,
             mainMenuButtonsCompletedName,
             mainMenuButtonsCompletedLore,
-            mainMenuButtonsCompletedModelData)
+            mainMenuButtonsCompletedModelData.toFloat())
     }
 
     return menu

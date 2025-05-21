@@ -51,9 +51,9 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: Mut
                     }
                 } else if (description.isNotEmpty()) {
 
-                    val loreDescritpion = description.joinToString("\n") { it.lines(player) }
+                    val loreDescription = description.joinToString("\n") { it.lines(player) }
                     addAll(
-                        loreDescritpion.parsePlaceholders(player).limitLineLength(40).splitComponents()
+                        loreDescription.parsePlaceholders(player).limitLineLength(40).splitComponents()
                     )
                 } else {
                     addAll(
@@ -63,7 +63,7 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: Mut
             }
             menu.setItem(
                 index,
-                createQuestButton(player, quest, Material.getMaterial(questMenuButtonQuestType) ?: Material.WRITTEN_BOOK, lore, questMenuButtonQuestModelData)
+                createQuestButton(player, quest, Material.getMaterial(questMenuButtonQuestType) ?: Material.WRITTEN_BOOK, lore, questMenuButtonQuestModelData.toFloat())
             )
         }
     }
@@ -72,21 +72,21 @@ fun createQuestsJournalInventory(player: Player, status: QuestStatus, pages: Mut
         questMenuButtonPreviousPlace, Material.getMaterial(questMenuButtonPreviousType) ?: Material.ARROW,
         questMenuButtonPreviousTitle,
         questMenuButtonPreviousLore,
-        questMenuButtonPreviousModelData
+        questMenuButtonPreviousModelData.toFloat()
     )
 
     createSimpleButton(menu,
         questMenuButtonLeavePlace, Material.getMaterial(questMenuButtonLeaveType) ?: Material.BARRIER,
         questMenuButtonLeaveTitle,
         questMenuButtonLeaveLore,
-        questMenuButtonLeaveModelData
+        questMenuButtonLeaveModelData.toFloat()
     )
 
     createSimpleButton(menu,
         questMenuButtonNextPlace, Material.getMaterial(questMenuButtonNextType) ?: Material.ARROW,
         questMenuButtonNextTitle,
         questMenuButtonNextLore,
-        questMenuButtonNextModelData
+        questMenuButtonNextModelData.toFloat()
     )
 
     return menu

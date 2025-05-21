@@ -14,12 +14,12 @@ fun createSimpleButton(
     material: Material,
     name: String,
     lore: List<String>,
-    customModelData: Int? = null
+    customModelData: Float? = null
 ) {
     val simpleButton = ItemStack(material).apply {
         itemMeta = itemMeta?.apply {
             displayName(name.asMiniwithoutItalic())
-            customModelData?.let { setCustomModelData(it) }
+            customModelDataComponent.floats.add(customModelData)
             lore(lore.map { it.asMiniwithoutItalic() })
         }
     }
@@ -31,11 +31,11 @@ fun createQuestButton(
     quest: QuestEntry,
     material: Material,
     lore: List<Component>,
-    customModelData: Int? = null
+    customModelData: Float? = null
 ) = ItemStack(material).apply {
     itemMeta = itemMeta?.apply {
         displayName(quest.displayName.get(player).parsePlaceholders(player).asMiniwithoutItalic())
-        customModelData?.let { setCustomModelData(it) }
+        customModelDataComponent.floats.add(customModelData)
         lore(lore)
     }
 }

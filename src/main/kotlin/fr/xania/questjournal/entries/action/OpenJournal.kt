@@ -2,16 +2,15 @@ package fr.xania.questjournal.entries.action
 
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
-import com.typewritermc.core.entries.priority
 import com.typewritermc.core.extension.annotations.Entry
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
-import com.typewritermc.engine.paper.entry.entries.EventTrigger
+import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.snippets.snippet
-import fr.xania.questjournal.interaction.JournalStartTrigger
+import fr.xania.questjournal.inventories.createMainJournalInventory
 import java.util.Collections.emptyList
 
 val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Quests Journal")
@@ -38,7 +37,6 @@ val mainMenuButtonsCompletedModelData: Int by snippet("journal.menu.main.buttons
 val mainMenuButtonsCompletedPlace: Int by snippet("journal.menu.main.buttons.completed.place", 24)
 val mainMenuButtonsCompletedLore: List<String> by snippet("journal.menu.main.buttons.completed.lore", listOf("<gray>Click to open your quests", "<gray>and see your progress"))
 
-val questMenuButtonQuestEnabled: Boolean by snippet("journal.menu.quest.buttons.quest.enabled", true)
 val questMenuButtonQuestType: String by snippet("journal.menu.quest.buttons.quest.type", "WRITTEN_BOOK")
 val questMenuButtonQuestModelData: Int by snippet("journal.menu.quest.buttons.quest.model-data", 0)
 val questMenuButtonQuestLore: List<String> by snippet("journal.menu.quest.buttons.quest.lore", listOf("<red>No description available"))
@@ -77,12 +75,11 @@ class OpenJournal(
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : ActionEntry {
-    override val eventTriggers: List<EventTrigger>
-        get() = listOf(
-            JournalStartTrigger(
-                this.priority,
-                super.eventTriggers
+    override fun ActionTrigger.execute() {
+        SYNC.launch {
+            player.openInventory(
+                createMainJournalInventory(player)
             )
-        )
-    override fun ActionTrigger.execute() {}
+        }
+    }
 }
