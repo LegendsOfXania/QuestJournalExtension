@@ -1,11 +1,15 @@
-repositories {}
+repositories {
+    mavenCentral()
+}
 dependencies {
     implementation("com.typewritermc:QuestExtension:0.8.0")
+    implementation("dev.triumphteam:triumph-gui:3.1.11")
 }
 
 plugins {
     kotlin("jvm") version "2.0.21"
     id("com.typewritermc.module-plugin") version "1.2.0"
+    id("io.github.goooler.shadow") version "8.1.8"
 }
 
 group = "fr.xania"
@@ -31,6 +35,11 @@ typewriter {
         }
     }
 }
+
 kotlin {
     jvmToolchain(21)
+}
+
+tasks.shadowJar {
+    relocate("dev.triumphteam.gui", "fr.xania.questjournal.gui")
 }

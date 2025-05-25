@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/QuestJournalExtension.main.iml" filepath="$PROJECT_DIR$/.idea/modules/QuestJournalExtension.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/QuestJournalExtension.test.iml" filepath="$PROJECT_DIR$/.idea/modules/QuestJournalExtension.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/fr.xania.QuestJournalExtension.main.iml" filepath="$PROJECT_DIR$/.idea/modules/fr.xania.QuestJournalExtension.main.iml" />
     </modules>
   </component>
