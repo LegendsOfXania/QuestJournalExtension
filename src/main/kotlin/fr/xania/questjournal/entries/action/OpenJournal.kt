@@ -10,55 +10,40 @@ import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.utils.ThreadType.SYNC
 import com.typewritermc.engine.paper.snippets.snippet
-import fr.xania.questjournal.inventories.createMainJournalInventory
+import fr.xania.questjournal.inventories.mainJournalInventory
 import java.util.Collections.emptyList
 
-val mainMenuTitleSnippet: String by snippet("journal.menu.main.title", "Quests Journal")
-val questMenuActiveTitleSnippet: String by snippet("journal.menu.quest.title", "Quests")
+val mainMenuTitle: String by snippet("journal.menu.main.title", "Quests Journal")
+val mainMenuRows: Int by snippet("journal.menu.main.rows", 6)
 
-val mainMenuButtonsActiveEnabled: Boolean by snippet("journal.menu.main.buttons.active.enabled", true)
-val mainMenuButtonsActiveName: String by snippet("journal.menu.main.buttons.active.name", "<green>See active quests")
-val mainMenuButtonsActiveType: String by snippet("journal.menu.main.buttons.active.type", "GREEN_BANNER")
-val mainMenuButtonsActiveModelData: Int by snippet("journal.menu.main.buttons.active.model-data", 0)
-val mainMenuButtonsActivePlace: Int by snippet("journal.menu.main.buttons.active.place", 20)
-val mainMenuButtonsActiveLore: List<String> by snippet("journal.menu.main.buttons.active.lore", listOf("<gray>Click to open your quests", "<gray>and see your progress"))
+val mainMenuButtonLeaveName: String by snippet("journal.menu.main.button.leave.name", "Leave")
+val mainMenuButtonLeaveMaterial: String by snippet("journal.menu.main.button.leave.material", "BARRIER")
+val mainMenuButtonLeaveLore: List<String> by snippet("journal.menu.main.button.leave.lore", emptyList<String>())
+val mainMenuButtonLeaveSlot: Int by snippet("journal.menu.main.button.leave.slot", 0)
+val mainMenuButtonLeaveCMD: Int by snippet("journal.menu.main.button.leave.custom-model-data", 0)
 
-val mainMenuButtonsInactiveEnabled: Boolean by snippet("journal.menu.main.buttons.inactive.enabled", true)
-val mainMenuButtonsInactiveName: String by snippet("journal.menu.main.buttons.inactive.name", "<yellow>See inactive quests")
-val mainMenuButtonsInactiveType: String by snippet("journal.menu.main.buttons.inactive.type", "YELLOW_BANNER")
-val mainMenuButtonsInactiveModelData: Int by snippet("journal.menu.main.buttons.inactive.model-data", 0)
-val mainMenuButtonsInactivePlace: Int by snippet("journal.menu.main.buttons.inactive.place", 22)
-val mainMenuButtonsInactiveLore: List<String> by snippet("journal.menu.main.buttons.inactive.lore", listOf("<gray>Click to open your quests", "<gray>and see your progress"))
+val mainMenuButtonActiveName: String by snippet("journal.menu.main.button.active.name", "Active Quests")
+val mainMenuButtonActiveMaterial: String by snippet("journal.menu.main.button.active.material", "GREEN_BANNER")
+val mainMenuButtonActiveLore: List<String> by snippet("journal.menu.main.button.active.lore", emptyList<String>())
+val mainMenuButtonActiveSlot: Int by snippet("journal.menu.main.button.active.slot", 20)
+val mainMenuButtonActiveCMD: Int by snippet("journal.menu.main.button.active.custom-model-data", 0)
 
-val mainMenuButtonsCompletedEnabled: Boolean by snippet("journal.menu.main.buttons.completed.enabled", true)
-val mainMenuButtonsCompletedName: String by snippet("journal.menu.main.buttons.completed.name", "<gray>See completed quests")
-val mainMenuButtonsCompletedType: String by snippet("journal.menu.main.buttons.completed.type", "GRAY_BANNER")
-val mainMenuButtonsCompletedModelData: Int by snippet("journal.menu.main.buttons.completed.model-data", 0)
-val mainMenuButtonsCompletedPlace: Int by snippet("journal.menu.main.buttons.completed.place", 24)
-val mainMenuButtonsCompletedLore: List<String> by snippet("journal.menu.main.buttons.completed.lore", listOf("<gray>Click to open your quests", "<gray>and see your progress"))
+val mainMenuButtonInactiveName: String by snippet("journal.menu.main.button.inactive.name", "Inactive Quests")
+val mainMenuButtonInactiveMaterial: String by snippet("journal.menu.main.button.inactive.material", "RED_BANNER")
+val mainMenuButtonInactiveLore: List<String> by snippet("journal.menu.main.button.inactive.lore", emptyList<String>())
+val mainMenuButtonInactiveSlot: Int by snippet("journal.menu.main.button.inactive.slot", 22)
+val mainMenuButtonInactiveCMD: Int by snippet("journal.menu.main.button.inactive.custom-model-data", 0)
 
-val questMenuButtonQuestType: String by snippet("journal.menu.quest.buttons.quest.type", "WRITTEN_BOOK")
-val questMenuButtonQuestModelData: Int by snippet("journal.menu.quest.buttons.quest.model-data", 0)
-val questMenuButtonQuestLore: List<String> by snippet("journal.menu.quest.buttons.quest.lore", listOf("<red>No description available"))
+val mainMenuButtonCompletedName: String by snippet("journal.menu.main.button.completed.name", "Completed Quests")
+val mainMenuButtonCompletedMaterial: String by snippet("journal.menu.main.button.completed.material", "YELLOW_BANNER")
+val mainMenuButtonCompletedLore: List<String> by snippet("journal.menu.main.button.completed.lore", emptyList<String>())
+val mainMenuButtonCompletedSlot: Int by snippet("journal.menu.main.button.completed.slot", 24)
+val mainMenuButtonCompletedCMD: Int by snippet("journal.menu.main.button.completed.custom-model-data", 0)
 
-val questMenuButtonLeaveTitle: String by snippet("journal.menu.quest.buttons.leave.title", "<red>Leave")
-val questMenuButtonLeaveType: String by snippet("journal.menu.quest.buttons.leave.type", "BARRIER")
-val questMenuButtonLeaveModelData: Int by snippet("journal.menu.quest.buttons.leave.model-data", 0)
-val questMenuButtonLeavePlace: Int by snippet("journal.menu.quest.buttons.leave.place", 49)
-val questMenuButtonLeaveLore: List<String> by snippet("journal.menu.quest.buttons.leave.lore", listOf("<red>Click to leave the menu"))
-
-val questMenuButtonNextTitle: String by snippet("journal.menu.quest.buttons.next.title", "<yellow>Next")
-val questMenuButtonNextType: String by snippet("journal.menu.quest.buttons.next.type", "ARROW")
-val questMenuButtonNextModelData: Int by snippet("journal.menu.quest.buttons.next.model-data", 0)
-val questMenuButtonNextPlace: Int by snippet("journal.menu.quest.buttons.next.place", 53)
-val questMenuButtonNextLore: List<String> by snippet("journal.menu.quest.buttons.next.lore", listOf("<red>Click to go to the next page"))
-
-val questMenuButtonPreviousTitle: String by snippet("journal.menu.quest.buttons.previous.title", "<yellow>Previous")
-val questMenuButtonPreviousType: String by snippet("journal.menu.quest.buttons.previous.type", "ARROW")
-val questMenuButtonPreviousModelData: Int by snippet("journal.menu.quest.buttons.previous.model-data", 0)
-val questMenuButtonPreviousPlace: Int by snippet("journal.menu.quest.buttons.previous.place", 45)
-val questMenuButtonPreviousLore: List<String> by snippet("journal.menu.quest.buttons.previous.lore", listOf("<red>Click to go to the previous page"))
-
+val questMenuTitleActive: String by snippet("journal.menu.quest.title", "Actives Quests")
+val questMenuTitleInactive: String by snippet("journal.menu.quest.inactive.title", "Inactives Quests")
+val questMenuTitleCompleted: String by snippet("journal.menu.quest.completed.title", "Completed Quests")
+val questMenuRows: Int by snippet("journal.menu.quest.rows", 6)
 
 @Entry("open_journal", "The base of the Quests Journal.", Colors.RED, "mdi-light:book-multiple")
 /**
@@ -77,9 +62,7 @@ class OpenJournal(
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
         SYNC.launch {
-            player.openInventory(
-                createMainJournalInventory(player)
-            )
+            mainJournalInventory(player)
         }
     }
 }

@@ -1,43 +1,54 @@
 package fr.xania.questjournal.inventories
 
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
-import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.asMini
+import com.typewritermc.quest.QuestStatus
+import dev.triumphteam.gui.builder.item.ItemBuilder
+import dev.triumphteam.gui.guis.Gui
 import fr.xania.questjournal.entries.action.*
-import fr.xania.questjournal.inventoryHolder.MainJournalInventoryHolder
-import fr.xania.questjournal.utils.createSimpleButton
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.Inventory
 
-fun createMainJournalInventory(player: Player): Inventory {
 
-    val menuTitle = mainMenuTitleSnippet.parsePlaceholders(player).asMini()
-    val menu = plugin.server.createInventory(MainJournalInventoryHolder(), 54, menuTitle)
+fun mainJournalInventory(player: Player) {
+    val mainJournal = Gui.gui()
+        .title(mainMenuTitle.parsePlaceholders(player).asMini())
+        .rows(mainMenuRows)
+        .create()
 
-    if (mainMenuButtonsActiveEnabled) {
-        createSimpleButton(menu,
-            mainMenuButtonsActivePlace, Material.getMaterial(mainMenuButtonsActiveType) ?: Material.GREEN_BANNER,
-            mainMenuButtonsActiveName,
-            mainMenuButtonsActiveLore,
-            mainMenuButtonsActiveModelData.toFloat())
-    }
+    val leaveButton = ItemBuilder
+        .from(Material.getMaterial(mainMenuButtonLeaveMaterial) ?: Material.BARRIER)
+        .name(mainMenuButtonLeaveName.parsePlaceholders(player).asMini())
+        .lore(mainMenuButtonLeaveLore.map { it.parsePlaceholders(player).asMini() })
+        .model(mainMenuButtonLeaveCMD)
+        .asGuiItem { event -> mainJournal.close(player) }
 
-    if (mainMenuButtonsInactiveEnabled) {
-        createSimpleButton(menu,
-            mainMenuButtonsInactivePlace, Material.getMaterial(mainMenuButtonsInactiveType) ?: Material.YELLOW_BANNER,
-            mainMenuButtonsInactiveName,
-            mainMenuButtonsInactiveLore,
-            mainMenuButtonsInactiveModelData.toFloat())
-    }
+    val activeButton = ItemBuilder
+        .from(Material.getMaterial(mainMenuButtonActiveMaterial) ?: Material.GREEN_BANNER)
+        .name(mainMenuButtonActiveName.parsePlaceholders(player).asMini())
+        .lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMini() })
+        .model(mainMenuButtonActiveCMD)
+        .asGuiItem { event -> questJournalInventory(player, QuestStatus.ACTIVE) }
 
-    if (mainMenuButtonsCompletedEnabled) {
-        createSimpleButton(menu,
-            mainMenuButtonsCompletedPlace, Material.getMaterial(mainMenuButtonsCompletedType) ?: Material.GRAY_BANNER,
-            mainMenuButtonsCompletedName,
-            mainMenuButtonsCompletedLore,
-            mainMenuButtonsCompletedModelData.toFloat())
-    }
+    val inactiveButton = ItemBuilder
+        .from(Material.getMaterial(mainMenuButtonInactiveMaterial) ?:Material.RED_BANNER)
+        .name(mainMenuButtonInactiveName.parsePlaceholders(player).asMini())
+        .lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMini() })
+        .model(mainMenuButtonInactiveCMD)
+        .asGuiItem { event -> questJournalInventory(player, QuestStatus.INACTIVE) }
 
-    return menu
+    val completedButton = ItemBuilder
+        .from(Material.getMaterial(mainMenuButtonCompletedMaterial) ?: Material.YELLOW_BANNER)
+        .name(mainMenuButtonCompletedName.parsePlaceholders(player).asMini())
+        .lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMini() })
+        .model(mainMenuButtonCompletedCMD)
+        .asGuiItem { event -> questJournalInventory(player, QuestStatus.COMPLETED) }
+
+    mainJournal.setItem(mainMenuButtonLeaveSlot, leaveButton)
+
+    mainJournal.setItem(mainMenuButtonActiveSlot, activeButton)
+    mainJournal.setItem(mainMenuButtonInactiveSlot, inactiveButton)
+    mainJournal.setItem(mainMenuButtonCompletedSlot, completedButton)
+
+    mainJournal.open(player)
 }

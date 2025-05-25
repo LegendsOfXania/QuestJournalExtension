@@ -13,10 +13,7 @@ import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
 import com.typewritermc.engine.paper.utils.splitComponents
 import fr.xania.questjournal.entries.action.*
-import fr.xania.questjournal.inventoryHolder.QuestsJournalInventoryHolder
 import fr.xania.questjournal.utils.asMiniwithoutItalic
-import fr.xania.questjournal.utils.createQuestButton
-import fr.xania.questjournal.utils.createSimpleButton
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
