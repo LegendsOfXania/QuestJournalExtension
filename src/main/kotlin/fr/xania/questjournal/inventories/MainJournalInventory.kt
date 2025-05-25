@@ -17,28 +17,28 @@ fun mainJournalInventory(player: Player) {
         .create()
 
     val leaveButton = ItemBuilder
-        .from(Material.getMaterial(mainMenuButtonLeaveMaterial) ?: Material.BARRIER)
+        .from(mainMenuButtonLeaveMaterial)
         .name(mainMenuButtonLeaveName.parsePlaceholders(player).asMini())
         .lore(mainMenuButtonLeaveLore.map { it.parsePlaceholders(player).asMini() })
         .model(mainMenuButtonLeaveCMD)
         .asGuiItem { event -> mainJournal.close(player) }
 
     val activeButton = ItemBuilder
-        .from(Material.getMaterial(mainMenuButtonActiveMaterial) ?: Material.GREEN_BANNER)
+        .from(mainMenuButtonActiveMaterial)
         .name(mainMenuButtonActiveName.parsePlaceholders(player).asMini())
         .lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMini() })
         .model(mainMenuButtonActiveCMD)
         .asGuiItem { event -> questJournalInventory(player, QuestStatus.ACTIVE) }
 
     val inactiveButton = ItemBuilder
-        .from(Material.getMaterial(mainMenuButtonInactiveMaterial) ?:Material.RED_BANNER)
+        .from(mainMenuButtonInactiveMaterial)
         .name(mainMenuButtonInactiveName.parsePlaceholders(player).asMini())
         .lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMini() })
         .model(mainMenuButtonInactiveCMD)
         .asGuiItem { event -> questJournalInventory(player, QuestStatus.INACTIVE) }
 
     val completedButton = ItemBuilder
-        .from(Material.getMaterial(mainMenuButtonCompletedMaterial) ?: Material.YELLOW_BANNER)
+        .from(mainMenuButtonCompletedMaterial)
         .name(mainMenuButtonCompletedName.parsePlaceholders(player).asMini())
         .lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMini() })
         .model(mainMenuButtonCompletedCMD)
