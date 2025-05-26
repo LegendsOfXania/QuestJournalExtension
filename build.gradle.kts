@@ -3,7 +3,7 @@ repositories {
 }
 dependencies {
     implementation("com.typewritermc:QuestExtension:0.8.0")
-    implementation("dev.triumphteam:triumph-gui:3.1.11")
+    implementation("dev.triumphteam:triumph-gui:3.1.12")
 }
 
 plugins {
