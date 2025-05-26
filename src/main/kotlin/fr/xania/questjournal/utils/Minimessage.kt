@@ -4,6 +4,6 @@ import com.typewritermc.engine.paper.utils.asMini
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 
-fun String.asMiniwithoutItalic(): Component {
+fun String.asMiniWithoutItalic(): Component {
     return asMini().decorations(setOf(TextDecoration.ITALIC), false)
 }

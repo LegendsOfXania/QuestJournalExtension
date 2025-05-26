@@ -6,7 +6,7 @@ import com.typewritermc.quest.QuestStatus
 import dev.triumphteam.gui.builder.item.ItemBuilder
 import dev.triumphteam.gui.guis.Gui
 import fr.xania.questjournal.entries.action.*
-import org.bukkit.Material
+import fr.xania.questjournal.utils.asMiniWithoutItalic
 import org.bukkit.entity.Player
 
 
@@ -18,29 +18,29 @@ fun mainJournalInventory(player: Player) {
 
     val leaveButton = ItemBuilder
         .from(mainMenuButtonLeaveMaterial)
-        .name(mainMenuButtonLeaveName.parsePlaceholders(player).asMini())
-        .lore(mainMenuButtonLeaveLore.map { it.parsePlaceholders(player).asMini() })
+        .name(mainMenuButtonLeaveName.parsePlaceholders(player).asMiniWithoutItalic())
+        .lore(mainMenuButtonLeaveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(mainMenuButtonLeaveCMD)
         .asGuiItem { event -> mainJournal.close(player) }
 
     val activeButton = ItemBuilder
         .from(mainMenuButtonActiveMaterial)
-        .name(mainMenuButtonActiveName.parsePlaceholders(player).asMini())
-        .lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMini() })
+        .name(mainMenuButtonActiveName.parsePlaceholders(player).asMiniWithoutItalic())
+        .lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(mainMenuButtonActiveCMD)
         .asGuiItem { event -> questJournalInventory(player, QuestStatus.ACTIVE) }
 
     val inactiveButton = ItemBuilder
         .from(mainMenuButtonInactiveMaterial)
-        .name(mainMenuButtonInactiveName.parsePlaceholders(player).asMini())
-        .lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMini() })
+        .name(mainMenuButtonInactiveName.parsePlaceholders(player).asMiniWithoutItalic())
+        .lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(mainMenuButtonInactiveCMD)
         .asGuiItem { event -> questJournalInventory(player, QuestStatus.INACTIVE) }
 
     val completedButton = ItemBuilder
         .from(mainMenuButtonCompletedMaterial)
-        .name(mainMenuButtonCompletedName.parsePlaceholders(player).asMini())
-        .lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMini() })
+        .name(mainMenuButtonCompletedName.parsePlaceholders(player).asMiniWithoutItalic())
+        .lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(mainMenuButtonCompletedCMD)
         .asGuiItem { event -> questJournalInventory(player, QuestStatus.COMPLETED) }
 
