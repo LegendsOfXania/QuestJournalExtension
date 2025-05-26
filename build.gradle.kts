@@ -9,7 +9,7 @@ dependencies {
 plugins {
     kotlin("jvm") version "2.0.21"
     id("com.typewritermc.module-plugin") version "1.2.0"
-    id("io.github.goooler.shadow") version "8.1.8"
+    id("com.gradleup.shadow") version "8.3.3"
 }
 
 group = "fr.xania"
@@ -41,5 +41,9 @@ kotlin {
 }
 
 tasks.shadowJar {
-    relocate("dev.triumphteam.gui", "fr.xania.questjournal.gui")
+    relocate("dev.triumphteam.gui", "fr.xania.gui")
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }
