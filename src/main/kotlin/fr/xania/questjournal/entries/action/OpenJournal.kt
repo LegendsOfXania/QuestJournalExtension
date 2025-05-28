@@ -72,7 +72,7 @@ val questMenuButtonQuestMaterial: String by snippet("journal.menu.quest.button.q
 val questMenuButtonQuestLore: List<String> by snippet("journal.menu.quest.button.quest.lore", emptyList<String>(), "The lore of the quest button if the quest has not any description or objectives.")
 val questMenuButtonQuestCMD: Int by snippet("journal.menu.quest.button.quest.custom-model-data", 0)
 
-val doesQuestTrackedOnClick: Boolean by config("journal.TrackedOnClick", false, "Should the quest be tracked when clicking on it in the journal?")
+val doesQuestTrackedOnClick: Boolean by config("trackedOnClick", false, "Should the quest be tracked when clicking on it in the journal?")
 
 @Entry("open_journal", "The base of the Quests Journal.", Colors.RED, "mdi-light:book-multiple")
 /**

@@ -94,8 +94,11 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
             .name(quest.displayName.get(player).parsePlaceholders(player).asMiniWithoutItalic())
             .lore(lore)
             .model(questMenuButtonQuestCMD)
-            .asGuiItem{ event ->
-                if (doesQuestTrackedOnClick) player.trackQuest(quest.ref())
+            .asGuiItem { event ->
+                if (doesQuestTrackedOnClick) {
+                    player.trackQuest(quest.ref())
+                    questsJournal.close(player)
+                }
             }
 
         questsJournal.addItem(questButton)
