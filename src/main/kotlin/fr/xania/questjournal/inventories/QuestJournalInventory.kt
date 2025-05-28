@@ -1,6 +1,7 @@
 package fr.xania.questjournal.inventories
 
 import com.typewritermc.core.entries.Query
+import com.typewritermc.core.entries.ref
 import com.typewritermc.engine.paper.entry.descendants
 import com.typewritermc.engine.paper.entry.entries.LinesEntry
 import com.typewritermc.engine.paper.entry.inAudience
@@ -11,6 +12,7 @@ import com.typewritermc.engine.paper.utils.splitComponents
 import com.typewritermc.quest.ObjectiveEntry
 import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
+import com.typewritermc.quest.trackQuest
 import dev.triumphteam.gui.builder.item.ItemBuilder
 import dev.triumphteam.gui.guis.Gui
 import fr.xania.questjournal.entries.action.*
@@ -29,7 +31,6 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
             }
         )
         .rows(questMenuRows)
-        .pageSize(45)
         .disableAllInteractions()
         .create()
 
@@ -39,7 +40,7 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
         .lore(questMenuButtonPreviousLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(questMenuButtonPreviousCMD)
         .asGuiItem { event ->
-            if (questsJournal.currentPageNum == 0) {
+            if (questsJournal.currentPageNum == 1) {
                 mainJournalInventory(player)
             } else {
                 questsJournal.previous()
@@ -93,7 +94,9 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
             .name(quest.displayName.get(player).parsePlaceholders(player).asMiniWithoutItalic())
             .lore(lore)
             .model(questMenuButtonQuestCMD)
-            .asGuiItem()
+            .asGuiItem{ event ->
+                if (doesQuestTrackedOnClick) player.trackQuest(quest.ref())
+            }
 
         questsJournal.addItem(questButton)
     }
