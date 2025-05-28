@@ -10,6 +10,7 @@ import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.ThreadType
+import com.typewritermc.engine.paper.utils.config
 import fr.xania.questjournal.inventories.mainJournalInventory
 import java.util.Collections.emptyList
 
@@ -70,6 +71,8 @@ val questMenuButtonNextCMD: Int by snippet("journal.menu.quest.button.next.custo
 val questMenuButtonQuestMaterial: String by snippet("journal.menu.quest.button.quest.material", "BOOK")
 val questMenuButtonQuestLore: List<String> by snippet("journal.menu.quest.button.quest.lore", emptyList<String>(), "The lore of the quest button if the quest has not any description or objectives.")
 val questMenuButtonQuestCMD: Int by snippet("journal.menu.quest.button.quest.custom-model-data", 0)
+
+val doesQuestTrackedOnClick: Boolean by config("journal.TrackedOnClick", false, "Should the quest be tracked when clicking on it in the journal?")
 
 @Entry("open_journal", "The base of the Quests Journal.", Colors.RED, "mdi-light:book-multiple")
 /**
