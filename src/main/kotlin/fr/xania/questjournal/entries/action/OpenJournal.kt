@@ -9,33 +9,37 @@ import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.snippets.snippet
+import com.typewritermc.engine.paper.utils.ThreadType
 import fr.xania.questjournal.inventories.mainJournalInventory
-import org.bukkit.Material
 import java.util.Collections.emptyList
 
 val mainMenuTitle: String by snippet("journal.menu.main.title", "Quests Journal")
 val mainMenuRows: Int by snippet("journal.menu.main.rows", 6)
 
+val mainMenuButtonLeaveIsEnabled: Boolean by snippet("journal.menu.main.button.leave.enabled", true)
 val mainMenuButtonLeaveName: String by snippet("journal.menu.main.button.leave.name", "Leave")
-val mainMenuButtonLeaveMaterial: Material by snippet("journal.menu.main.button.leave.material", Material.BARRIER)
+val mainMenuButtonLeaveMaterial: String by snippet("journal.menu.main.button.leave.material", "BARRIER")
 val mainMenuButtonLeaveLore: List<String> by snippet("journal.menu.main.button.leave.lore", emptyList<String>())
 val mainMenuButtonLeaveSlot: Int by snippet("journal.menu.main.button.leave.slot", 0)
 val mainMenuButtonLeaveCMD: Int by snippet("journal.menu.main.button.leave.custom-model-data", 0)
 
+val mainMenuButtonActiveIsEnabled: Boolean by snippet("journal.menu.main.button.active.enabled", true)
 val mainMenuButtonActiveName: String by snippet("journal.menu.main.button.active.name", "Active Quests")
-val mainMenuButtonActiveMaterial: Material by snippet("journal.menu.main.button.active.material", Material.GREEN_BANNER)
+val mainMenuButtonActiveMaterial: String by snippet("journal.menu.main.button.active.material", "GREEN_BANNER")
 val mainMenuButtonActiveLore: List<String> by snippet("journal.menu.main.button.active.lore", emptyList<String>())
 val mainMenuButtonActiveSlot: Int by snippet("journal.menu.main.button.active.slot", 20)
 val mainMenuButtonActiveCMD: Int by snippet("journal.menu.main.button.active.custom-model-data", 0)
 
+val mainMenuButtonInactiveIsEnabled: Boolean by snippet("journal.menu.main.button.inactive.enabled", true)
 val mainMenuButtonInactiveName: String by snippet("journal.menu.main.button.inactive.name", "Inactive Quests")
-val mainMenuButtonInactiveMaterial: Material by snippet("journal.menu.main.button.inactive.material", Material.RED_BANNER)
+val mainMenuButtonInactiveMaterial: String by snippet("journal.menu.main.button.inactive.material", "RED_BANNER")
 val mainMenuButtonInactiveLore: List<String> by snippet("journal.menu.main.button.inactive.lore", emptyList<String>())
 val mainMenuButtonInactiveSlot: Int by snippet("journal.menu.main.button.inactive.slot", 22)
 val mainMenuButtonInactiveCMD: Int by snippet("journal.menu.main.button.inactive.custom-model-data", 0)
 
+val mainMenuButtonCompletedIsEnabled: Boolean by snippet("journal.menu.main.button.completed.enabled", true)
 val mainMenuButtonCompletedName: String by snippet("journal.menu.main.button.completed.name", "Completed Quests")
-val mainMenuButtonCompletedMaterial: Material by snippet("journal.menu.main.button.completed.material", Material.YELLOW_BANNER)
+val mainMenuButtonCompletedMaterial: String by snippet("journal.menu.main.button.completed.material", "YELLOW_BANNER")
 val mainMenuButtonCompletedLore: List<String> by snippet("journal.menu.main.button.completed.lore", emptyList<String>())
 val mainMenuButtonCompletedSlot: Int by snippet("journal.menu.main.button.completed.slot", 24)
 val mainMenuButtonCompletedCMD: Int by snippet("journal.menu.main.button.completed.custom-model-data", 0)
@@ -46,24 +50,24 @@ val questMenuTitleCompleted: String by snippet("journal.menu.quest.completed.tit
 val questMenuRows: Int by snippet("journal.menu.quest.rows", 6)
 
 val questMenuButtonPreviousName: String by snippet("journal.menu.quest.button.previous.name", "Previous Page")
-val questMenuButtonPreviousMaterial: Material by snippet("journal.menu.quest.button.previous.material", Material.ARROW)
+val questMenuButtonPreviousMaterial: String by snippet("journal.menu.quest.button.previous.material", "ARROW")
 val questMenuButtonPreviousLore: List<String> by snippet("journal.menu.quest.button.previous.lore", emptyList<String>())
 val questMenuButtonPreviousSlot: Int by snippet("journal.menu.quest.button.previous.slot", 45)
 val questMenuButtonPreviousCMD: Int by snippet("journal.menu.quest.button.previous.custom-model-data", 0)
 
 val questMenuButtonLeaveName: String by snippet("journal.menu.quest.button.leave.name", "Leave")
-val questMenuButtonLeaveMaterial: Material by snippet("journal.menu.quest.button.leave.material", Material.BARRIER)
+val questMenuButtonLeaveMaterial: String by snippet("journal.menu.quest.button.leave.material", "BARRIER")
 val questMenuButtonLeaveLore: List<String> by snippet("journal.menu.quest.button.leave.lore", emptyList<String>())
-val questMenuButtonLeaveSlot: Int by snippet("journal.menu.quest.button.leave.slot", 0)
+val questMenuButtonLeaveSlot: Int by snippet("journal.menu.quest.button.leave.slot", 49)
 val questMenuButtonLeaveCMD: Int by snippet("journal.menu.quest.button.leave.custom-model-data", 0)
 
 val questMenuButtonNextName: String by snippet("journal.menu.quest.button.next.name", "Next Page")
-val questMenuButtonNextMaterial: Material by snippet("journal.menu.quest.button.next.material", Material.ARROW)
+val questMenuButtonNextMaterial: String by snippet("journal.menu.quest.button.next.material", "ARROW")
 val questMenuButtonNextLore: List<String> by snippet("journal.menu.quest.button.next.lore", emptyList<String>())
 val questMenuButtonNextSlot: Int by snippet("journal.menu.quest.button.next.slot", 53)
 val questMenuButtonNextCMD: Int by snippet("journal.menu.quest.button.next.custom-model-data", 0)
 
-val questMenuButtonQuestMaterial: Material by snippet("journal.menu.quest.button.quest.material", Material.WRITTEN_BOOK)
+val questMenuButtonQuestMaterial: String by snippet("journal.menu.quest.button.quest.material", "BOOK")
 val questMenuButtonQuestLore: List<String> by snippet("journal.menu.quest.button.quest.lore", emptyList<String>(), "The lore of the quest button if the quest has not any description or objectives.")
 val questMenuButtonQuestCMD: Int by snippet("journal.menu.quest.button.quest.custom-model-data", 0)
 
@@ -83,6 +87,8 @@ class OpenJournal(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
-        mainJournalInventory(player)
+        ThreadType.SYNC.launch {
+            mainJournalInventory(player)
+        }
     }
 }

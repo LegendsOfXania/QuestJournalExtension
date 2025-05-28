@@ -15,6 +15,7 @@ import dev.triumphteam.gui.builder.item.ItemBuilder
 import dev.triumphteam.gui.guis.Gui
 import fr.xania.questjournal.entries.action.*
 import fr.xania.questjournal.utils.asMiniWithoutItalic
+import org.bukkit.Material
 import org.bukkit.entity.Player
 
 fun questJournalInventory(player: Player, status: QuestStatus) {
@@ -28,28 +29,36 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
             }
         )
         .rows(questMenuRows)
+        .pageSize(45)
+        .disableAllInteractions()
         .create()
 
     val previousButton = ItemBuilder
-        .from(questMenuButtonPreviousMaterial)
+        .from(Material.getMaterial(questMenuButtonPreviousMaterial) ?: Material.ARROW)
         .name(questMenuButtonPreviousName.parsePlaceholders(player).asMiniWithoutItalic())
         .lore(questMenuButtonPreviousLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(questMenuButtonPreviousCMD)
-        .asGuiItem { event -> questsJournal.previous()}
+        .asGuiItem { event ->
+            if (questsJournal.currentPageNum == 0) {
+                mainJournalInventory(player)
+            } else {
+                questsJournal.previous()
+            }
+        }
 
     val leaveButton = ItemBuilder
-        .from(questMenuButtonLeaveMaterial)
+        .from(Material.getMaterial(questMenuButtonLeaveMaterial) ?: Material.BARRIER)
         .name(questMenuButtonLeaveName.parsePlaceholders(player).asMiniWithoutItalic())
         .lore(questMenuButtonLeaveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(questMenuButtonLeaveCMD)
         .asGuiItem { event -> questsJournal.close(player) }
 
     val nextButton = ItemBuilder
-        .from(questMenuButtonNextMaterial)
+        .from(Material.getMaterial(questMenuButtonNextMaterial) ?: Material.ARROW)
         .name(questMenuButtonNextName.parsePlaceholders(player).asMiniWithoutItalic())
         .lore(questMenuButtonNextLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
         .model(questMenuButtonNextCMD)
-        .asGuiItem { event -> questsJournal.next()}
+        .asGuiItem { event -> questsJournal.next() }
 
     questsJournal.setItem(questMenuButtonPreviousSlot, previousButton)
     questsJournal.setItem(questMenuButtonLeaveSlot, leaveButton)
@@ -80,7 +89,7 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
             }
         }
         val questButton = ItemBuilder
-            .from(questMenuButtonQuestMaterial)
+            .from(Material.getMaterial(questMenuButtonQuestMaterial) ?: Material.BOOK)
             .name(quest.displayName.get(player).parsePlaceholders(player).asMiniWithoutItalic())
             .lore(lore)
             .model(questMenuButtonQuestCMD)
@@ -88,4 +97,5 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
 
         questsJournal.addItem(questButton)
     }
+    questsJournal.open(player)
 }
