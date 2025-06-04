@@ -1,14 +1,14 @@
 repositories {
-    mavenCentral()
+     mavenCentral()
 }
 dependencies {
-    implementation("com.typewritermc:QuestExtension:0.8.0")
+    implementation("com.typewritermc:QuestExtension:0.9.0")
     implementation("dev.triumphteam:triumph-gui:3.1.12")
 }
 
 plugins {
     kotlin("jvm") version "2.0.21"
-    id("com.typewritermc.module-plugin") version "1.2.0"
+    id("com.typewritermc.module-plugin") version "1.3.0"
     id("com.gradleup.shadow") version "8.3.3"
 }
 
@@ -26,7 +26,7 @@ typewriter {
             |in a single menu, organized by status and tracking progress.
             |Create by the Legends of Xania.
             """.trimMargin()
-        engineVersion = "0.9.0-beta-159"
+        engineVersion = "0.9.0-beta-160"
         channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
 
         dependencies {

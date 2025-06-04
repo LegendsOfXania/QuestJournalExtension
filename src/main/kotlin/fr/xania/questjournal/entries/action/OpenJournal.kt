@@ -12,6 +12,7 @@ import com.typewritermc.engine.paper.snippets.snippet
 import com.typewritermc.engine.paper.utils.ThreadType
 import com.typewritermc.engine.paper.utils.config
 import fr.xania.questjournal.inventories.mainJournalInventory
+import kotlinx.coroutines.Dispatchers
 import java.util.Collections.emptyList
 
 val mainMenuTitle: String by snippet("journal.menu.main.title", "Quests Journal")
@@ -90,7 +91,7 @@ class OpenJournal(
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
-        ThreadType.SYNC.launch {
+        Dispatchers.UntickedAsync.launch {
             mainJournalInventory(player)
         }
     }
