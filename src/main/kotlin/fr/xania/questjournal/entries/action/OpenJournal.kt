@@ -3,14 +3,14 @@ package fr.xania.questjournal.entries.action
 import com.typewritermc.core.books.pages.Colors
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.extension.annotations.Entry
+import com.typewritermc.core.utils.launch
 import com.typewritermc.engine.paper.entry.Criteria
 import com.typewritermc.engine.paper.entry.Modifier
 import com.typewritermc.engine.paper.entry.TriggerableEntry
 import com.typewritermc.engine.paper.entry.entries.ActionEntry
 import com.typewritermc.engine.paper.entry.entries.ActionTrigger
 import com.typewritermc.engine.paper.snippets.snippet
-import com.typewritermc.engine.paper.utils.ThreadType
-import com.typewritermc.engine.paper.utils.config
+import com.typewritermc.engine.paper.utils.Sync
 import fr.xania.questjournal.inventories.mainJournalInventory
 import kotlinx.coroutines.Dispatchers
 import java.util.Collections.emptyList
@@ -73,8 +73,6 @@ val questMenuButtonQuestMaterial: String by snippet("journal.menu.quest.button.q
 val questMenuButtonQuestLore: List<String> by snippet("journal.menu.quest.button.quest.lore", emptyList<String>(), "The lore of the quest button if the quest has not any description or objectives.")
 val questMenuButtonQuestCMD: Int by snippet("journal.menu.quest.button.quest.custom-model-data", 0)
 
-val doesQuestTrackedOnClick: Boolean by config("trackedOnClick", false, "Should the quest be tracked when clicking on it in the journal?")
-
 @Entry("open_journal", "The base of the Quests Journal.", Colors.RED, "mdi-light:book-multiple")
 /**
  * The `Open Journal` is an action that open the Quest Journal to the player.
@@ -89,10 +87,11 @@ class OpenJournal(
     override val criteria: List<Criteria> = emptyList(),
     override val modifiers: List<Modifier> = emptyList(),
     override val triggers: List<Ref<TriggerableEntry>> = emptyList(),
+    val doesQuestTrackedOnClick: Boolean = false,
 ) : ActionEntry {
     override fun ActionTrigger.execute() {
-        Dispatchers.UntickedAsync.launch {
-            mainJournalInventory(player)
+        Dispatchers.Sync.launch {
+            mainJournalInventory(player, doesQuestTrackedOnClick)
         }
     }
 }

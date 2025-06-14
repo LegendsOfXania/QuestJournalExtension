@@ -20,7 +20,7 @@ import fr.xania.questjournal.utils.asMiniWithoutItalic
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-fun questJournalInventory(player: Player, status: QuestStatus) {
+fun questJournalInventory(player: Player, status: QuestStatus, doesQuestTrackedOnClick: Boolean) {
 
     val questsJournal = Gui.paginated()
         .title(
@@ -41,7 +41,7 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
         .model(questMenuButtonPreviousCMD)
         .asGuiItem { event ->
             if (questsJournal.currentPageNum == 1) {
-                mainJournalInventory(player)
+                mainJournalInventory(player, doesQuestTrackedOnClick)
             } else {
                 questsJournal.previous()
             }
@@ -89,6 +89,7 @@ fun questJournalInventory(player: Player, status: QuestStatus) {
                 )
             }
         }
+
         val questButton = ItemBuilder
             .from(Material.getMaterial(questMenuButtonQuestMaterial) ?: Material.BOOK)
             .name(quest.displayName.get(player).parsePlaceholders(player).asMiniWithoutItalic())

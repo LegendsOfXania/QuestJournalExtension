@@ -26,7 +26,7 @@ typewriter {
             |in a single menu, organized by status and tracking progress.
             |Create by the Legends of Xania.
             """.trimMargin()
-        engineVersion = "0.9.0-beta-160"
+        engineVersion = "0.9.0-beta-161"
         channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
 
         dependencies {

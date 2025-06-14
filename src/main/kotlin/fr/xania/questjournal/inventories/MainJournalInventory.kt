@@ -10,7 +10,7 @@ import fr.xania.questjournal.utils.asMiniWithoutItalic
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-fun mainJournalInventory(player: Player) {
+fun mainJournalInventory(player: Player, doesQuestTrackedOnClick: Boolean) {
 
     val mainJournal = Gui.gui()
         .title(mainMenuTitle.parsePlaceholders(player).asMini())
@@ -34,7 +34,7 @@ fun mainJournalInventory(player: Player) {
             .name(mainMenuButtonActiveName.parsePlaceholders(player).asMiniWithoutItalic())
             .lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
             .model(mainMenuButtonActiveCMD)
-            .asGuiItem { event -> questJournalInventory(player, QuestStatus.ACTIVE) }
+            .asGuiItem { event -> questJournalInventory(player, QuestStatus.ACTIVE, doesQuestTrackedOnClick) }
 
         mainJournal.setItem(mainMenuButtonActiveSlot, activeButton)
     }
@@ -44,7 +44,7 @@ fun mainJournalInventory(player: Player) {
             .name(mainMenuButtonInactiveName.parsePlaceholders(player).asMiniWithoutItalic())
             .lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
             .model(mainMenuButtonInactiveCMD)
-            .asGuiItem { event -> questJournalInventory(player, QuestStatus.INACTIVE) }
+            .asGuiItem { event -> questJournalInventory(player, QuestStatus.INACTIVE, doesQuestTrackedOnClick) }
 
         mainJournal.setItem(mainMenuButtonInactiveSlot, inactiveButton)
     }
@@ -54,7 +54,7 @@ fun mainJournalInventory(player: Player) {
             .name(mainMenuButtonCompletedName.parsePlaceholders(player).asMiniWithoutItalic())
             .lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
             .model(mainMenuButtonCompletedCMD)
-            .asGuiItem { event -> questJournalInventory(player, QuestStatus.COMPLETED) }
+            .asGuiItem { event -> questJournalInventory(player, QuestStatus.COMPLETED, doesQuestTrackedOnClick) }
 
         mainJournal.setItem(mainMenuButtonCompletedSlot, completedButton)
     }
