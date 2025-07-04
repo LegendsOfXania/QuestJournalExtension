@@ -3,6 +3,7 @@ repositories {
 }
 dependencies {
     implementation("com.typewritermc:QuestExtension:0.9.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.4.0")
     implementation("dev.triumphteam:triumph-gui:3.1.12")
 }
 
