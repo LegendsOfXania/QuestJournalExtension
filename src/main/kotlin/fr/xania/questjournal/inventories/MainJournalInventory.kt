@@ -1,62 +1,61 @@
 package fr.xania.questjournal.inventories
 
 import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
+import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.asMini
-import com.typewritermc.quest.QuestStatus
-import dev.triumphteam.gui.builder.item.ItemBuilder
-import dev.triumphteam.gui.guis.Gui
 import fr.xania.questjournal.entries.action.*
 import fr.xania.questjournal.utils.asMiniWithoutItalic
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.InventoryHolder
+import org.bukkit.inventory.ItemStack
 
-fun mainJournalInventory(player: Player, doesQuestTrackedOnClick: Boolean) {
+class MainJournalInventory(
+    private val player: Player,
+) : InventoryHolder {
 
-    val mainJournal = Gui.gui()
-        .title(mainMenuTitle.parsePlaceholders(player).asMini())
-        .rows(mainMenuRows)
-        .disableAllInteractions()
-        .create()
+    private val inventory = plugin.server.createInventory(
+        this,
+        mainMenuRows,
+        mainMenuTitle.parsePlaceholders(player).asMini()
+    )
 
-    if (mainMenuButtonLeaveIsEnabled) {
-        val leaveButton = ItemBuilder
-            .from(Material.getMaterial(mainMenuButtonLeaveMaterial) ?: Material.BARRIER)
-            .name(mainMenuButtonLeaveName.parsePlaceholders(player).asMiniWithoutItalic())
-            .lore(mainMenuButtonLeaveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-            .model(mainMenuButtonLeaveCMD)
-            .asGuiItem { event -> mainJournal.close(player) }
+    init {
 
-        mainJournal.setItem(mainMenuButtonLeaveSlot, leaveButton)
+        if (mainMenuButtonActiveIsEnabled) {
+            val activeButton = ItemStack(Material.getMaterial(mainMenuButtonActiveMaterial) ?: Material.BARRIER).apply {
+                itemMeta = itemMeta.apply {
+                    displayName(mainMenuButtonActiveName.parsePlaceholders(player).asMiniWithoutItalic())
+                    lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
+                    customModelDataComponent.floats.let { mainMenuButtonActiveCMD.toFloat() }
+                }
+            }
+            inventory.setItem(mainMenuButtonActiveSlot, activeButton)
+        }
+
+        if (mainMenuButtonInactiveIsEnabled) {
+            val inactiveButton = ItemStack(Material.getMaterial(mainMenuButtonInactiveMaterial) ?: Material.BARRIER).apply {
+                itemMeta = itemMeta.apply {
+                    displayName(mainMenuButtonInactiveName.parsePlaceholders(player).asMiniWithoutItalic())
+                    lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
+                    customModelDataComponent.floats.let { mainMenuButtonInactiveCMD.toFloat() }
+                }
+            }
+            inventory.setItem(mainMenuButtonInactiveSlot, inactiveButton)
+        }
+
+        if (mainMenuButtonCompletedIsEnabled) {
+            val completedButton = ItemStack(Material.getMaterial(mainMenuButtonCompletedMaterial) ?: Material.BARRIER).apply {
+                itemMeta = itemMeta.apply {
+                    displayName(mainMenuButtonCompletedName.parsePlaceholders(player).asMiniWithoutItalic())
+                    lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
+                    customModelDataComponent.floats.let { mainMenuButtonCompletedCMD.toFloat() }
+                }
+            }
+            inventory.setItem(mainMenuButtonCompletedSlot, completedButton)
+        }
     }
-    if (mainMenuButtonActiveIsEnabled) {
-        val activeButton = ItemBuilder
-            .from(Material.getMaterial(mainMenuButtonActiveMaterial) ?: Material.GREEN_BANNER)
-            .name(mainMenuButtonActiveName.parsePlaceholders(player).asMiniWithoutItalic())
-            .lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-            .model(mainMenuButtonActiveCMD)
-            .asGuiItem { event -> questJournalInventory(player, QuestStatus.ACTIVE, doesQuestTrackedOnClick) }
 
-        mainJournal.setItem(mainMenuButtonActiveSlot, activeButton)
-    }
-    if (mainMenuButtonInactiveIsEnabled) {
-        val inactiveButton = ItemBuilder
-            .from(Material.getMaterial(mainMenuButtonInactiveMaterial) ?: Material.RED_BANNER)
-            .name(mainMenuButtonInactiveName.parsePlaceholders(player).asMiniWithoutItalic())
-            .lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-            .model(mainMenuButtonInactiveCMD)
-            .asGuiItem { event -> questJournalInventory(player, QuestStatus.INACTIVE, doesQuestTrackedOnClick) }
 
-        mainJournal.setItem(mainMenuButtonInactiveSlot, inactiveButton)
-    }
-    if (mainMenuButtonCompletedIsEnabled) {
-        val completedButton = ItemBuilder
-            .from(Material.getMaterial(mainMenuButtonCompletedMaterial) ?: Material.YELLOW_BANNER)
-            .name(mainMenuButtonCompletedName.parsePlaceholders(player).asMiniWithoutItalic())
-            .lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-            .model(mainMenuButtonCompletedCMD)
-            .asGuiItem { event -> questJournalInventory(player, QuestStatus.COMPLETED, doesQuestTrackedOnClick) }
-
-        mainJournal.setItem(mainMenuButtonCompletedSlot, completedButton)
-    }
-    mainJournal.open(player)
+    override fun getInventory() = inventory
 }

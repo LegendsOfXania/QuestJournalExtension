@@ -3,14 +3,11 @@ repositories {
 }
 dependencies {
     implementation("com.typewritermc:QuestExtension:0.9.0")
-    //implementation("net.kyori:adventure-platform-bukkit:4.23.0")
-    implementation("dev.triumphteam:triumph-gui:3.1.12")
 }
 
 plugins {
     kotlin("jvm") version "2.0.21"
     id("com.typewritermc.module-plugin") version "1.3.0"
-    id("com.gradleup.shadow") version "8.3.3"
 }
 
 group = "fr.xania"
@@ -39,12 +36,4 @@ typewriter {
 
 kotlin {
     jvmToolchain(21)
-}
-
-tasks.shadowJar {
-    relocate("dev.triumphteam.gui", "fr.xania.gui")
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
 }
