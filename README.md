@@ -11,8 +11,8 @@ Created by Legends of Xania.
 
 ## 📦 Installation  
 
-1. Download **TypeWriter 0.8.0**. 
-2. Download **QuestJournalExtension.jar**.  
+1. Download **TypeWriter**. 
+2. Download **QuestJournalExtension**.  
 3. Place it in the `plugins/TypeWriter/extensions/` folder.  
 4. Restart your server.  
 
@@ -25,64 +25,52 @@ journal:
   menu:
     main:
       title: Quests Journal
-      buttons:
+      # The number of slot in the menu, need to be a multiple of 9.
+      rows: 54
+      button:
         active:
-         enabled: true
-          name: <green>See active quests
-          type: GREEN_BANNER
-          model-data: 0
-          place: 20
-          lore:
-          - <gray>Click <i>to open your quests</i>
-          - <gray>and see your progress
+          enabled: true
+          name: Active Quests
+          material: GREEN_BANNER
+          lore: []
+          slot: 20
+          custom-model-data: 0
         inactive:
-         enabled: true
-          name: <yellow>See inactive quests
-          type: YELLOW_BANNER
-          model-data: 0
-          place: 22
-          lore:
-          - <gray>Click to open your quests
-          - <gray>and see your progress
+          enabled: true
+          name: Inactive Quests
+          material: RED_BANNER
+          lore: []
+          slot: 22
+          custom-model-data: 0
         completed:
-         enabled: true
-          name: <gray>See completed quests
-          type: GRAY_BANNER
-          model-data: 0
-          place: 24
-          lore:
-          - <gray>Click to open your quests
-          - <gray>and see your progress
+          enabled: true
+          name: Completed Quests
+          material: YELLOW_BANNER
+          lore: []
+          slot: 24
+          custom-model-data: 0
     quest:
-      title: Quests
-      buttons:
-        quest:
-          type: WRITTEN_BOOK
-          model-data: 0
-          lore:
-          - <red>No description available
-        leave:
-          title: <red>Leave
-          type: BARRIER
-          model-data: 0
-          place: 49
-          lore:
-          - <red>Click to leave the menu
-        next:
-          title: <yellow>Next
-          type: ARROW
-          model-data: 0
-          place: 53
-          lore:
-          - <red>Click to go to the next page
+      title: Quests Journal
+      # The number of slot in the menu, need to be a multiple of 9.
+      rows: 54
+      button:
         previous:
-          title: <yellow>Previous
-          type: ARROW
-          model-data: 0
-          place: 45
-          lore:
-          - <red>Click to go to the previous page
-
+          name: Previous Page
+          material: ARROW
+          lore: []
+          slot: 45
+          custom-model-data: 0
+        next:
+          name: Next Page
+          material: ARROW
+          lore: []
+          slot: 53
+          custom-model-data: 0
+        quest:
+          material: BOOK
+          # The lore of the quest button if the quest has not any description or objectives.
+          lore: <red>No description available
+          custom-model-data: 0
 ```
 
 ## 📖 Credits
