@@ -76,7 +76,7 @@ class QuestJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(quest.displayName.get(player).parsePlaceholders(player).asMiniWithoutItalic())
                     lore(lore)
-                    customModelDataComponent.floats.let { questMenuButtonQuestCMD.toFloat() }
+                    customModelData.let { questMenuButtonQuestCMD }
                 }
             }
 
@@ -89,7 +89,7 @@ class QuestJournalInventory(
             itemMeta = itemMeta.apply {
                 displayName(questMenuButtonPreviousName.parsePlaceholders(player).asMiniWithoutItalic())
                 lore(questMenuButtonPreviousLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                customModelDataComponent.floats.let { questMenuButtonPreviousCMD.toFloat() }
+                customModelData.let { questMenuButtonPreviousCMD }
             }
         }
         inventory.setItem(questMenuButtonPreviousSlot, previousButton)
@@ -98,7 +98,7 @@ class QuestJournalInventory(
             itemMeta = itemMeta.apply {
                 displayName(questMenuButtonNextName.parsePlaceholders(player).asMiniWithoutItalic())
                 lore(questMenuButtonNextLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                customModelDataComponent.floats.let { questMenuButtonQuestCMD.toFloat() }
+                customModelData.let { questMenuButtonQuestCMD }
             }
         }
         inventory.setItem(questMenuButtonNextSlot, nextButton)

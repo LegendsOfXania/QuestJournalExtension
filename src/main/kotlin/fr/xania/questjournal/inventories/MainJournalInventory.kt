@@ -27,7 +27,7 @@ class MainJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(mainMenuButtonActiveName.parsePlaceholders(player).asMiniWithoutItalic())
                     lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                    customModelDataComponent.floats.let { mainMenuButtonActiveCMD.toFloat() }
+                    customModelData.let { mainMenuButtonActiveCMD }
                 }
             }
             inventory.setItem(mainMenuButtonActiveSlot, activeButton)
@@ -38,7 +38,7 @@ class MainJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(mainMenuButtonInactiveName.parsePlaceholders(player).asMiniWithoutItalic())
                     lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                    customModelDataComponent.floats.let { mainMenuButtonInactiveCMD.toFloat() }
+                    customModelData.let { mainMenuButtonInactiveCMD }
                 }
             }
             inventory.setItem(mainMenuButtonInactiveSlot, inactiveButton)
@@ -49,7 +49,7 @@ class MainJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(mainMenuButtonCompletedName.parsePlaceholders(player).asMiniWithoutItalic())
                     lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                    customModelDataComponent.floats.let { mainMenuButtonCompletedCMD.toFloat() }
+                    customModelData.let { mainMenuButtonCompletedCMD }
                 }
             }
             inventory.setItem(mainMenuButtonCompletedSlot, completedButton)
