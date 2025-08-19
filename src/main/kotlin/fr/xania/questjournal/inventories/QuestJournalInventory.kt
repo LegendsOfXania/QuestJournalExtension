@@ -14,6 +14,8 @@ import com.typewritermc.quest.QuestEntry
 import com.typewritermc.quest.QuestStatus
 import fr.xania.questjournal.entries.action.*
 import fr.xania.questjournal.utils.asMiniWithoutItalic
+import io.papermc.paper.datacomponent.DataComponentTypes
+import io.papermc.paper.datacomponent.item.CustomModelData
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
@@ -76,10 +78,9 @@ class QuestJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(quest.displayName.get(player).parsePlaceholders(player).asMiniWithoutItalic())
                     lore(lore)
-                    customModelData.let { questMenuButtonQuestCMD }
                 }
+                setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(questMenuButtonQuestCMD.toFloat()))
             }
-
             inventory.setItem(slot, questButton)
         }
     }
@@ -89,8 +90,8 @@ class QuestJournalInventory(
             itemMeta = itemMeta.apply {
                 displayName(questMenuButtonPreviousName.parsePlaceholders(player).asMiniWithoutItalic())
                 lore(questMenuButtonPreviousLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                customModelData.let { questMenuButtonPreviousCMD }
             }
+            setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(questMenuButtonPreviousCMD.toFloat()))
         }
         inventory.setItem(questMenuButtonPreviousSlot, previousButton)
 
@@ -98,8 +99,8 @@ class QuestJournalInventory(
             itemMeta = itemMeta.apply {
                 displayName(questMenuButtonNextName.parsePlaceholders(player).asMiniWithoutItalic())
                 lore(questMenuButtonNextLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                customModelData.let { questMenuButtonQuestCMD }
             }
+            setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(questMenuButtonNextCMD.toFloat()))
         }
         inventory.setItem(questMenuButtonNextSlot, nextButton)
     }

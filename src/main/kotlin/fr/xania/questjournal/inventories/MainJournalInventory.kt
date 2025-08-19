@@ -5,6 +5,8 @@ import com.typewritermc.engine.paper.plugin
 import com.typewritermc.engine.paper.utils.asMini
 import fr.xania.questjournal.entries.action.*
 import fr.xania.questjournal.utils.asMiniWithoutItalic
+import io.papermc.paper.datacomponent.DataComponentTypes
+import io.papermc.paper.datacomponent.item.CustomModelData
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.InventoryHolder
@@ -27,8 +29,8 @@ class MainJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(mainMenuButtonActiveName.parsePlaceholders(player).asMiniWithoutItalic())
                     lore(mainMenuButtonActiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                    customModelData.let { mainMenuButtonActiveCMD }
                 }
+                setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(mainMenuButtonActiveCMD.toFloat()))
             }
             inventory.setItem(mainMenuButtonActiveSlot, activeButton)
         }
@@ -38,8 +40,8 @@ class MainJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(mainMenuButtonInactiveName.parsePlaceholders(player).asMiniWithoutItalic())
                     lore(mainMenuButtonInactiveLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                    customModelData.let { mainMenuButtonInactiveCMD }
                 }
+                setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(mainMenuButtonInactiveCMD.toFloat()))
             }
             inventory.setItem(mainMenuButtonInactiveSlot, inactiveButton)
         }
@@ -49,8 +51,8 @@ class MainJournalInventory(
                 itemMeta = itemMeta.apply {
                     displayName(mainMenuButtonCompletedName.parsePlaceholders(player).asMiniWithoutItalic())
                     lore(mainMenuButtonCompletedLore.map { it.parsePlaceholders(player).asMiniWithoutItalic() })
-                    customModelData.let { mainMenuButtonCompletedCMD }
                 }
+                setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(mainMenuButtonCompletedCMD.toFloat()))
             }
             inventory.setItem(mainMenuButtonCompletedSlot, completedButton)
         }
