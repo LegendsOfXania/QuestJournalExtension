@@ -1,5 +1,8 @@
 # QuestJournalExtension
 
+> [!Warning]
+> This extension is depreciated. As a result, it will no longer receive new content/bugs fixes and wont be updated to Typewriter V1. Only updates to support new Typewriter's betas will take place.
+
 An extension for [TypeWriter](https://docs.typewritermc.com/) that adds a **quest journal** to your Minecraft server.  
 Created by Legends of Xania.
 
